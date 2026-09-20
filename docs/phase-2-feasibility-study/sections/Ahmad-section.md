@@ -1,3 +1,6 @@
+# Project Scope Stakeholders Project Schedule and Risk Assessment
+
+
 ## 1 Project Scope
 
 ### 1.1 Project problem
@@ -159,6 +162,7 @@ The project will follow an Agile approach and progress incrementally through the
 | Phase 7 | Test-case details and testing preparation | Labs in the week of November 23, 2026 | 1 week |
 | Phase 8 | Final project, presentation, and demonstration | The course slide places it in the week of November 23, 2026 | Exact final date and duration should be confirmed |
 
+
 ### 3.2 Development sequence
 
 The proposed development sequence is:
@@ -202,27 +206,68 @@ The schedule contains several important dependencies:
 
 Delays in requirements, technology selection, data preparation, or integration could affect every later phase.
 
-### 3.5 Schedule risks and responses
+### 3.5 Schedule control approach
 
-| Schedule risk | Possible effect | Planned response |
-|---|---|---|
-| Scope is too large for one semester | Core features or testing may remain incomplete | Complete must-have functions first and postpone could-have features |
-| Team needs time to learn selected technologies | Implementation begins late or contains defects | Select technologies early and build a small technical prototype before full development |
-| Requirements change after development starts | Rework and delays | Review requirements regularly and record changes through the Agile process |
-| AI integration takes longer than expected | Core system delivery is threatened | Isolate AI features and demonstrate one limited use case after the core workflow works |
-| Test data is unavailable | AI and reporting features cannot be validated | Prepare realistic authorized test data and document its assumptions |
-| Integration happens too late | Components fail near the final deadline | Integrate in small increments and test throughout development |
-| Work is unevenly distributed | Some sections or components fall behind | Review workload weekly and reassign tasks when needed |
-
-The main risk owner should include these items in the group's combined risk assessment.
+The team will review progress against the course milestones every week. Each review should identify completed work, unfinished tasks, blockers, changes to requirements, and work planned for the following week. When a delay threatens a milestone, the team should first reduce optional features, then reassign work, and finally revise the implementation sequence while preserving the must-have workflow. The schedule-related risks and contingency actions are included in the complete risk assessment in Section 4.
 
 ### 3.6 Schedule feasibility finding
 
 The course schedule is demanding but feasible for an academic prototype if the team controls scope, completes requirements and design before major implementation, integrates features incrementally, and protects adequate time for testing. Completing every proposed AI feature would increase schedule risk. The team should therefore treat the core asset-management workflow as the required result and introduce AI capabilities in priority order.
 
-## 4 Conclusion for Assigned Areas
+## 4 Risk Assessment
 
-The project has a clear problem, defined users, and a workable minimum scope. Its stakeholders have identifiable responsibilities and information needs, although approval rules, access restrictions, and reporting assumptions still require confirmation. The schedule can support a working prototype if the team uses the MoSCoW priorities, reviews progress weekly, and postpones optional AI functions when they threaten the core deliverable.
+### 4.1 Purpose and rating method
+
+Risk assessment identifies events that could prevent the team from completing a useful, secure, and testable prototype. Each risk is rated using qualitative probability and impact levels:
+
+- **Low:** Unlikely to occur or expected to cause limited disruption.
+- **Medium:** Could occur and may require changes to the plan.
+- **High:** Likely to occur or capable of threatening a major deliverable.
+
+The team should review the risk register weekly. A risk owner monitors each item, reports changes, and coordinates the response. Ownership does not mean that one person handles the risk alone.
+
+### 4.2 Risk register
+
+| ID | Risk | Probability | Impact | Prevention and mitigation | Contingency if it occurs | Owner | 
+|---|---|---|---|---|---|---|
+| R1 | The project scope is too large for one semester | High | High | Complete must-have functions before should-have and could-have functions; review scope weekly | Remove or simplify optional AI, reporting, and convenience features while preserving the core workflow | Ahmad |
+| R2 | Requirements or approval rules remain unclear | Medium | High | Confirm workflows with instructors and available stakeholders during Phase 3; document assumptions | Implement configurable prototype rules and clearly label unconfirmed decisions in the documentation | Ahmad |
+| R3 | A course milestone is missed | Medium | High | Break work into weekly tasks, assign owners, and monitor progress | Reassign work, reduce optional scope, and agree on a recovery plan before the next milestone | Ahmad and all members |
+| R4 | Team workload becomes uneven or a member is unavailable | Medium | Medium | Keep tasks visible in GitHub and review workload weekly | Transfer urgent tasks to another member and document the reassignment | Ahmad and all members |
+| R5 | The team lacks experience with a selected technology | Medium | High | Select familiar technologies where possible and build an early technical prototype | Replace the difficult component with a simpler supported alternative | Abdulrahman |
+| R6 | Frontend, backend, database, and AI components fail to integrate | Medium | High | Define interfaces early and integrate small increments throughout development | Disable the failing optional component, preserve the core workflow, and demonstrate it separately if necessary | Abdulrahman and Abdullah |
+| R7 | Suitable university data is unavailable | Medium | High | Request only authorized information and design realistic test data early | Use documented synthetic data and state that results are illustrative | Ahmad and Khalid |
+| R8 | Sensitive data, credentials, or access permissions are mishandled | Medium | High | Use test data, role-based permissions, secure configuration, and a `.gitignore`; never commit secrets | Revoke exposed credentials immediately, remove access, inform the team and instructor, and replace the affected data or service | Abdulrahman |
+| R9 | AI produces inaccurate, biased, or unsuitable recommendations | High | High | Use AI only for suggestions, provide explanations, test representative cases, and require human review | Allow authorized users to reject the output and use rule-based or manual decisions when confidence is insufficient | Khalid |
+| R10 | AI or cloud services become unavailable or too expensive | Medium | Medium | Monitor free-tier limits and isolate external services behind replaceable interfaces | Use a lower-cost service, local mock responses, or a non-AI fallback for the demonstration | Khalid |
+| R11 | Users find the workflows confusing or do not trust the system | Medium | Medium | Review interface designs early and test common workflows with representative users when possible | Simplify screens, improve instructions, and provide manual alternatives for AI-assisted actions | Abdullah |
+| R12 | Testing begins too late to correct major defects | Medium | High | Prepare test cases during development and test each increment | Freeze optional features and focus the remaining time on integration and critical defects | Abdullah and all members |
+| R13 | Team members overwrite work or create Git conflicts | Medium | Medium | Use separate files and branches, pull current changes, and review pull requests before merging | Resolve conflicts using the last reviewed version and recover earlier work from Git history | All members |
+| R14 | Financial or sustainability estimates cannot be supported | Medium | Medium | Record data sources, formulas, units, and assumptions; request stakeholder review | Present scenario ranges instead of unsupported exact values and identify the data needed for a real deployment | Khalid |
+| R15 | Legal, privacy, licensing, or university-policy requirements restrict the proposed approach | Medium | High | Use authorized data and approved tools; review software licenses and relevant university requirements | Remove restricted data or services, replace them with test data or approved alternatives, and revise the affected feature | Khalid and Ahmad |
+
+### 4.3 Highest-priority risks
+
+The team should give immediate attention to scope growth, unclear requirements, schedule delay, system integration, data availability, security, and unreliable AI recommendations. These risks can directly prevent completion or make the prototype unsuitable for demonstration. The primary response is to protect the must-have workflow, validate assumptions early, integrate continuously, and keep all AI decisions subject to authorized human review.
+
+### 4.4 Risk monitoring process
+
+At the weekly progress review, the team should:
+
+1. Check whether the probability or impact of any existing risk has changed.
+2. Record newly identified risks.
+3. Confirm whether preventive actions were completed.
+4. Assign an owner and deadline for each required response.
+5. Decide whether scope, schedule, or responsibilities need adjustment.
+6. Record the decision in the project documentation or GitHub issue history.
+
+### 4.5 Risk feasibility finding
+
+The identified risks are significant but manageable for an academic prototype. No listed risk currently requires the team to stop the project. Feasibility depends on limiting the scope, using authorized or synthetic data, testing integrations early, protecting sensitive information, and maintaining human oversight of AI recommendations. If these controls cannot be maintained, the team should reduce the affected feature or reconsider that part of the proposed system.
+
+## 5 Conclusion for Assigned Areas
+
+The project has a clear problem, defined users, and a workable minimum scope. Its stakeholders have identifiable responsibilities and information needs, although approval rules, access restrictions, and reporting assumptions still require confirmation. The schedule can support a working prototype if the team uses the MoSCoW priorities, reviews progress weekly, and postpones optional AI functions when they threaten the core deliverable. The main risks have practical preventive measures and contingency actions, but the team must monitor them throughout development.
 
 Based on the scope, stakeholder, and schedule analysis, these three areas support proceeding with the project under the following conditions:
 
@@ -231,9 +276,8 @@ Based on the scope, stakeholder, and schedule analysis, these three areas suppor
 - Authorized users must retain responsibility for approvals and final decisions.
 - The team must confirm unresolved stakeholder permissions and approval rules during Phase 3.
 - Progress, workload, risks, and scope must be reviewed every week.
+- High-priority risks must have an assigned owner and a recorded response.
 - The exact Phase 8 deadline and submission method should be confirmed with the instructors.
 
-## References
 
-1. Group 4. *Intelligent AI Powered Circular Campus Resource Exchange and Asset Life Cycle Management System Phase 1 Initial Plan and Requirement Gathering Document*. COSC 336, Khalifa University, Fall 2026.
-2. COSC 336 teaching team. *Phase 2 Feasibility Study*. Khalifa University, Fall 2026.
+
