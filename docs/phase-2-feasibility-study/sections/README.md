@@ -4,7 +4,8 @@ Each team member will prepare and review an assigned section of the Phase 2 feas
 
 ## Assignments
 
-- Ahmad: Project scope, stakeholders, and project schedule
+- Ahmad: Project scope, stakeholders, project schedule, and risk assessment
 - Abdullah: Technical analysis and market analysis
-- Khalid: Financial analysis and legal/regulatory analysis
-- Abdulrahman: risk assessment and final recommendation 
+- Khalid: Financial analysis 
+- Abdulrahman: legal/regulatory analysis
+- Everyone: final recommendation 
