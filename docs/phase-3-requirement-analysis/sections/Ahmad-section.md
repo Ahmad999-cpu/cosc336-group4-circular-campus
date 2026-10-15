@@ -1,17 +1,20 @@
-Section 4 
+#Section 4 
 
-4.4 Asset Search and Filtering
-4.4.1 Description and Priority
+##4.4 Asset Search and Filtering
+
+###4.4.1 Description and Priority
 Authorized Department Representatives and Asset Custodians can search published assets, combine filters, and inspect current asset details. Results are restricted by user permissions and current publication and availability information. Searching or viewing does not reserve an asset.
 Priority: High (Must Have)
-4.4.2 Stimulus Response Sequences
+
+###4.4.2 Stimulus Response Sequences
 Search Available Assets
 The user opens Available Assets, enters a name, keyword, or description, and submits the search. The system searches accessible published assets and returns matching results. An empty search lists all accessible published assets; no matches produces a clear message.
 Filter Available Assets
 The user chooses one or more category, condition, department, location, quantity, availability, age, estimated value, or life-cycle-state filters and selects Apply Filters. The system validates values and displays assets satisfying all selected filters and any search text. Clear Filters removes filters while retaining the search text.
 View Asset Search Result Details
 The user selects a result. The system rechecks permission, publication, and availability and displays the current asset details. For example, a department can search for monitors, filter for two available units, and inspect their condition before submitting a request.
-4.4.3 Functional Requirements
+
+###4.4.3 Functional Requirements
 FR-4.1: The system shall allow authenticated Department Representatives and Asset Custodians to search published assets they are authorized to view.
 FR-4.2: The system shall accept an asset name, keyword, or description as search input.
 FR-4.3: The system shall return accessible published assets whose name or description contains the entered search text, using case-insensitive text matching.
@@ -29,11 +32,14 @@ FR-4.14: The system shall prevent searches, filters, and detail views from reser
 FR-4.15: The system shall deny access to restricted listings and details without revealing their protected content.
 FR-4.16: The system shall display a retrieval error and allow retry without changing the current search criteria when search or detail retrieval fails.
 FR-4.17: The system shall identify missing age or estimated-value information as unavailable and exclude such an asset from a filter that requires that missing value.
-4.5 Resource Requests
-4.5.1 Description and Priority
+
+##4.5 Resource Requests
+
+###4.5.1 Description and Priority
 Authorized Department Representatives can submit, view, and update departmental resource requests. Requests record the operational need and remain Pending Approval until an authorized reviewer decides. An asset may be selected from available listings or suitable recommendations; submitting a request does not reserve it.
 Priority: High (Must Have)
-4.5.2 Stimulus Response Sequences
+
+###4.5.2 Stimulus Response Sequences
 Submit Resource Request
 The Department Representative opens the request form and enters the category, purpose, specifications, quantity, preferred condition, urgency, destination, and required date. A selected asset may be linked. The system validates the request, saves it as Pending Approval for the represented department, and displays and emails confirmation.
 View Resource Request
@@ -42,7 +48,8 @@ Update Resource Request
 The representative selects Edit Request on an eligible Pending Approval request and submits changes. The system validates authority, status, and current data and saves the changes with a timestamp. For example, a department can change its requested monitor quantity from two to three before approval.
 Cancel Pending Resource Request
 The representative selects Cancel Request on a Pending Approval request, enters a reason and confirms. The system rechecks authority and status and saves Cancelled with an audit record. If approval occurred in the meantime, the system directs the user to the reservation workflow instead.
-4.5.3 Functional Requirements
+
+###4.5.3 Functional Requirements
 FR-5.1: The system shall allow authorized Department Representatives to submit requests only for departments they are permitted to represent.
 FR-5.2: The system shall capture resource category, purpose, specifications, positive whole-number quantity, preferred condition, urgency, destination location, and required date.
 FR-5.3: The system shall require category, purpose, specifications, quantity, urgency, destination, and required date before submission and allow preferred condition to be recorded as Any.
@@ -66,11 +73,14 @@ FR-5.20: The system shall inform the representative if confirmation email delive
 FR-5.21: The system shall allow an authorized Department Representative to cancel their department's Pending Approval request after providing a reason and confirmation.
 FR-5.22: The system shall recheck that a request is Pending Approval and has no active reservation or transfer before saving its cancellation, reason, actor and timestamp.
 FR-5.23: The system shall preserve the previous request if cancellation fails and prevent repeated cancellation from changing asset quantities; Approved requests shall use the reservation cancellation workflow.
-4.6 Reservation Management
-4.6.1 Description and Priority
+
+##4.6 Reservation Management
+
+###4.6.1 Description and Priority
 Reservations allocate asset quantities only after approval. Authorized Department Representatives and Asset Custodians can view reservations, cancel eligible reservations before dispatch, and review history. Creation is part of the approval workflow in use case UC-33; it is not a separate action available before approval.
 Priority: High (Must Have)
-4.6.2 Stimulus Response Sequences
+
+###4.6.2 Stimulus Response Sequences
 Create Reservation After Approval
 When the authorized custodian confirms an eligible approval, the system rechecks available quantity and creates one linked Active reservation as part of the same saved operation. For example, reserving two of five available monitors leaves three available for other requests.
 View Reservation
@@ -79,7 +89,8 @@ Cancel Reservation
 The user selects Cancel Reservation, supplies a reason, and confirms. The system checks permission, Active status, and that dispatch has not occurred, then cancels the reservation and associated request and releases the quantity once.
 View Reservation History
 The user opens a reservation and selects View History. The system displays creation, cancellation, and fulfilment events in chronological order, including responsible users, timestamps, and reasons.
-4.6.3 Functional Requirements
+
+###4.6.3 Functional Requirements
 FR-6.1: The system shall create a reservation only when an authorized asset request is approved through the approval workflow.
 FR-6.2: The system shall create the request approval, linked reservation, and quantity allocation as one operation and preserve all previous records if any part fails.
 FR-6.3: The system shall recheck the approved quantity against current unreserved available quantity before allocating it.
@@ -100,18 +111,22 @@ FR-6.17: The system shall allow authorized users to view chronological reservati
 FR-6.18: The system shall preserve reservation history after cancellation or fulfilment and display the creation event when no later events exist.
 FR-6.19: The system shall allow a user to abandon cancellation before confirmation without changing quantities or records.
 FR-6.20: The system shall deny unauthorized access or cancellation and display retrieval or save errors without partial changes.
-4.7 Approval Management
-4.7.1 Description and Priority
+
+##4.7 Approval Management
+
+###4.7.1 Description and Priority
 Authorized Asset Custodians review pending requests for assets under their responsibility, approve eligible quantities, or reject requests with a reason. A custodian acting as reviewer cannot decide their own request. Approval reserves quantities but does not dispatch the asset or change destination custody.
 Priority: High (Must Have)
-4.7.2 Stimulus Response Sequences
+
+###4.7.2 Stimulus Response Sequences
 View Pending Requests
 The Asset Custodian opens Approval Management. The system displays eligible Pending Approval requests for assets under that custodian's responsibility. Selecting a request displays its purpose, quantity, destination, required date, and current asset availability.
 Approve Asset Request
 The custodian selects Approve and confirms. The system rechecks reviewer authority, separation from the requester, pending status, selected asset, and available quantity. It saves approval, reservation, and quantity allocation together and records the decision. For example, a request for three monitors cannot be approved when only two remain available.
 Reject Asset Request
 The custodian selects Reject, enters a reason, and confirms. The system validates authority, reviewer independence, pending status, and the reason, then saves Rejected with the reviewer and timestamp. It creates no reservation and changes no available quantity.
-4.7.3 Functional Requirements
+
+###4.7.3 Functional Requirements
 FR-7.1: The system shall allow an authorized Asset Custodian to view Pending Approval requests linked to assets under their responsibility.
 FR-7.2: The system shall display requester, department, selected asset, purpose, quantity, destination, required date, and current availability for each selected request.
 FR-7.3: The system shall display a message when no pending requests require review and refresh the displayed status if a request has already been processed.
@@ -130,11 +145,14 @@ FR-7.15: The system shall make the recorded status and rejection reason where ap
 FR-7.16: The system shall prevent request approval from changing destination custody or location or recording asset dispatch.
 FR-7.17: The system shall allow a reviewer to cancel confirmation without changing the request or quantities.
 FR-7.18: The system shall deny a decision outside the reviewer's authority and preserve request, reservation, and quantity records if saving the decision fails.
-4.8 Transfer Management
-4.8.1 Description and Priority
+
+##4.8 Transfer Management
+
+###4.8.1 Description and Priority
 Authorized Facilities Department Personnel dispatch approved reserved assets, and Receiving Department Representatives confirm delivery. Transfers record source, destination, arrangements, dispatch, receipt, delivery exceptions, and custody changes. Custody and destination location change only after valid receipt confirmation.
 Priority: High (Must Have)
-4.8.2 Stimulus Response Sequences
+
+###4.8.2 Stimulus Response Sequences
 Record Asset Dispatch
 Facilities personnel select an approved request with an Active reservation, enter or review collection or delivery arrangements, source, destination, and quantity, and confirm dispatch. The system validates the operation and saves In Transit with the responsible user and timestamp.
 View Transfer Status
@@ -143,7 +161,8 @@ Confirm Asset Receipt
 The receiving representative checks the delivery, enters received quantity, and confirms. If it matches dispatch, the system saves receipt, Completed transfer, Fulfilled reservation and request, and custody and location changes together. For example, confirming receipt of two monitors completes their move to the requesting department.
 Record Delivery Attempt
 Facilities personnel record an unsuccessful delivery attempt or a corrected delivery arrangement against an In Transit transfer. The system saves the reason, timestamp, and responsible user without completing the transfer or releasing the reservation.
-4.8.3 Functional Requirements
+
+###4.8.3 Functional Requirements
 FR-8.1: The system shall make an approved request with an Active reservation available for creation of one linked transfer record in Awaiting Dispatch state.
 FR-8.2: The system shall assign a unique transfer identifier and record the request, reservation, asset, source department and location, destination department and location, quantity, and collection or delivery arrangements.
 FR-8.3: The system shall allow authorized Facilities Department Personnel to enter and confirm dispatch details for transfers awaiting dispatch.
@@ -165,11 +184,14 @@ FR-8.18: The system shall allow cancellation of an unconfirmed dispatch, deliver
 FR-8.19: The system shall deny unauthorized transfer access or updates and display a message when no accessible transfer exists.
 FR-8.20: The system shall preserve previous request, reservation, quantities, transfer, receipt, custody, location, and history records if a related save operation fails and display an appropriate error.
 FR-8.21: The system shall block dispatch when the recorded asset condition or active maintenance record makes the asset ineligible for transfer and require authorized resolution without silently releasing the reservation.
-4.9 Asset Life Cycle Tracking
-4.9.1 Description and Priority
+
+##4.9 Asset Life Cycle Tracking
+
+###4.9.1 Description and Priority
 This feature allows authorized Asset Custodians to view asset history, record life-cycle events, and update permitted asset states. The history covers acquisition, allocation, utilization, inspection, maintenance, repair, transfer, refurbishment, donation, recycling, retirement, and disposal. It preserves earlier records and links controlled actions to their approved workflows.
 Priority: High (Must Have)
-4.9.2 Stimulus Response Sequences
+
+###4.9.2 Stimulus Response Sequences
 View Asset Life Cycle History
 The Asset Custodian selects a registered asset and chooses View Life-Cycle History. The system checks access and displays dated events in chronological order, including the responsible user and recorded changes. If only registration exists, the system displays it and states that no later events are recorded.
 Record Asset Life Cycle Event
@@ -178,7 +200,8 @@ Update Asset Life Cycle Status
 The Asset Custodian selects Update Life-Cycle Status and chooses a permitted state. The system validates the transition, checks approvals and conflicting reservations or transfers, and saves the status and history entry together. Transfer completion and custody changes must use the transfer workflow; a manual status update cannot bypass receipt confirmation.
 Request and Review End of Life Action
 The custodian proposes a donation, recycling, retirement or disposal action with supporting details. An independently authorized Approver reviews and confirms approval or rejection. The system records the decision without changing asset state; completion is recorded later through the life-cycle event workflow using that approval reference.
-4.9.3 Functional Requirements
+
+###4.9.3 Functional Requirements
 FR-9.1: The system shall allow authorized Asset Custodians to view the life-cycle history of registered assets within their assigned authority.
 FR-9.2: The system shall display recorded life-cycle events in chronological order, including event type, event date, description, responsible user, and recorded status, condition, custody, or location changes where applicable.
 FR-9.3: The system shall display the registration event and indicate that no later events exist when an asset has no subsequent history.
@@ -201,11 +224,14 @@ FR-9.19: The system shall retain a correction as a new event linked to the origi
 FR-9.20: The system shall allow an Asset Custodian to propose a donation, recycling, retirement or disposal action with an asset reference and supporting reason for review by an independently authorized Approver.
 FR-9.21: The system shall allow the assigned independent Approver to approve or reject an eligible proposed end-of-life action, recording the decision, reason, reviewer and timestamp without executing the action.
 FR-9.22: The system shall prevent self-approval and completion of an end-of-life action without its matching approval reference, and preserve the previous proposal and asset state if validation or saving fails.
-4.10 Maintenance and Repair Tracking
-4.10.1 Description and Priority
+
+##4.10 Maintenance and Repair Tracking
+
+###4.10.1 Description and Priority
 This feature allows authorized Asset Custodians to report defects and request inspections, and authorized Maintenance Staff to record repair actions, costs, progress, and asset condition after service. Maintenance records are linked to the asset life-cycle history. A completed repair does not by itself make an asset available for reservation or transfer.
 Priority: High (Must Have)
-4.10.2 Stimulus Response Sequences
+
+###4.10.2 Stimulus Response Sequences
 Report Asset Defect
 The Asset Custodian selects Report Defect for a registered asset and enters the description, severity, discovery date, and supporting information. The system validates and saves the report, sets the maintenance status to Defect Reported, confirms submission, and notifies Maintenance Staff. For example, a monitor that no longer powers on can be reported for assessment.
 Request Asset Inspection
@@ -214,7 +240,8 @@ Record Asset Repair
 Maintenance Staff select the relevant maintenance record and enter repair actions, outcome, date, costs, and supporting information. The system validates and saves the record, links it to the life-cycle history, and sets Repair Completed for a successful repair or Further Repair Required for an unsuccessful or incomplete repair.
 Track Maintenance Status and Update Asset Condition
 Maintenance Staff view a maintenance record and select Update Maintenance Status. The system displays the current progress, condition, and permitted updates. Staff submit the new status, condition, and supporting notes. The system validates and saves the update and its history entry. Availability is restored only through an authorized asset-state update after the condition supports reuse.
-4.10.3 Functional Requirements
+
+###4.10.3 Functional Requirements
 FR-10.1: The system shall allow authorized Asset Custodians to report defects for registered assets within their assigned authority.
 FR-10.2: The system shall record the asset identifier, defect description, severity, discovery date, reporting user, and supplied supporting information for each defect report.
 FR-10.3: The system shall validate required defect fields and reject incomplete or invalid submissions with field-specific messages.
@@ -235,18 +262,22 @@ FR-10.17: The system shall save a maintenance update, associated condition chang
 FR-10.18: The system shall prevent a maintenance-status update from automatically releasing an asset for reservation or transfer; availability shall require a permitted asset-state update after service.
 FR-10.19: The system shall deny maintenance access and updates outside the user's assigned permissions.
 FR-10.20: The system shall allow cancellation before submission without saving changes and display confirmation or an appropriate retrieval or save error after a submitted operation.
-4.11 Sustainability Recommendations
-4.11.1 Description and Priority
+
+##4.11 Sustainability Recommendations
+
+###4.11.1 Description and Priority
 This feature allows authorized Sustainability Officers to generate, review, accept, or reject AI-assisted recommendations for reuse, transfer, repair, refurbishment, donation, recycling, or retirement. Recommendations use available asset condition, age, usage, maintenance, cost, and environmental information. Explanations and data limitations support human review; accepting a recommendation records a decision and routes any required approval rather than executing the action.
 Priority: Medium (Should Have)
-4.11.2 Stimulus Response Sequences
+
+###4.11.2 Stimulus Response Sequences
 Generate Sustainability Recommendations
 The Sustainability Officer selects a registered asset and chooses Generate Sustainability Recommendations. The system checks permission and available information, requests analysis from the AI Recommendation Service, and displays the suggested action with an explanation. For example, the service may suggest repairing a monitor when its recorded condition and repair estimate support continued use.
 Review Sustainability Recommendations
 The Sustainability Officer selects an existing recommendation. The system displays the suggested action, supporting asset information, available cost and environmental estimates, and any confidence or data limitations. Viewing a recommendation leaves the asset record unchanged. If information is insufficient, the officer asks an authorized custodian to correct the asset record before requesting a new analysis.
 Accept or Reject Sustainability Recommendations
 The Sustainability Officer reviews the recommendation and selects Accept or Reject. The system requests confirmation and, for rejection, a reason. Before saving, it rechecks that the recommendation is current and undecided. It records the decision, officer, and timestamp and forwards an accepted action for any required approval. The asset state remains unchanged until the authorized operational workflow implements the action.
-4.11.3 Functional Requirements
+
+###4.11.3 Functional Requirements
 FR-13.1: The system shall allow authorized Sustainability Officers to request sustainability recommendations for registered assets they have permission to access.
 FR-13.2: The system shall retrieve available asset condition, age, usage history, maintenance and repair history, availability, and relevant cost and environmental information for analysis.
 FR-13.3: The system shall validate that sufficient asset information is available and identify missing information when a recommendation cannot be generated.
@@ -267,18 +298,22 @@ FR-13.17: The system shall forward accepted recommendations for any approvals re
 FR-13.18: The system shall display an appropriate error if the AI service fails and allow retry or manual assessment through authorized existing workflows without generating a false recommendation.
 FR-13.19: The system shall prevent unauthorized generation, access, or decisions on sustainability recommendations.
 FR-13.20: The system shall allow cancellation before generation is submitted or a decision is confirmed without applying the cancelled operation, and display confirmation after a saved decision.
-4.12 AI Based Resource Matching
-4.12.1 Description and Priority
+
+##4.12 AI Based Resource Matching
+
+###4.12.1 Description and Priority
 Authorized Department Representatives can generate, review, and regenerate ranked matches between an open departmental request and accessible published assets. AI compares meaning and suitability using available request, asset, cost, and sustainability information. Matches remain advisory and cannot reserve an asset or approve a request.
 Priority: Medium (Should Have)
-4.12.2 Stimulus Response Sequences
+
+###4.12.2 Stimulus Response Sequences
 Generate AI Resource Matches
 The representative selects an eligible open request and Generate AI Matches. The system validates information, gathers accessible published assets, and asks the AI matching module to compare candidates. It displays ranked assets, compatibility scores, and explanations. For example, a request for a display screen may match a listing described as a monitor.
 Review AI Resource Matches
 The representative selects a recommended asset. The system rechecks permission and current availability and displays specifications, condition, quantity, location, score, and explanation. The representative can return to the list or link a suitable asset through the resource-request workflow.
 Regenerate AI Resource Matches
 The representative saves any permitted request corrections and selects Regenerate Matches. The system uses current request and asset information to produce a new result set without overwriting previous sets or automatically replacing a selected asset. If AI fails, the representative can search and filter manually.
-4.12.3 Functional Requirements
+
+###4.12.3 Functional Requirements
 FR-12.1: The system shall allow authorized Department Representatives to generate resource matches for their accessible Pending Approval requests.
 FR-12.2: The system shall retrieve the current request category, purpose, specifications, quantity, preferred condition, urgency, location, and required date for matching.
 FR-12.3: The system shall consider only published assets the representative is permitted to view and use their current availability and unreserved quantity.
@@ -299,18 +334,22 @@ FR-12.17: The system shall display a clear message if no suitable matches exist 
 FR-12.18: The system shall display an appropriate failure message when the AI matching module fails and allow retry or manual search without presenting failed results as a new successful result set.
 FR-12.19: The system shall allow generation, regeneration, or review to be cancelled before submission without applying the cancelled operation or replacing previous results.
 FR-12.20: The system shall deny unauthorized matching requests or result access and preserve prior result sets and selected request details if saving generated results fails.
-4.13 Reporting
-4.13.1 Description and Priority
+
+##4.13 Reporting
+
+###4.13.1 Description and Priority
 Authorized users can generate operational and sustainability reports from records within their access scope. Conventional totals remain available without AI. Optional AI summaries explain an existing report and remain subject to human review before export or sharing.
 Priority: High (Must Have) for conventional operational reports; Medium (Should Have) for supported sustainability estimates; Low (Could Have) for generative AI summaries.
-4.13.2 Stimulus Response Sequences
+
+###4.13.2 Stimulus Response Sequences
 Generate Operational Report
 The user selects a report type, department and date range. The system validates permission and filters and displays totals and detailed records for available assets, requests, approvals, reservations, transfers, maintenance, custody changes or asset states. The user may export the permitted result as CSV.
 Generate Sustainability Report
 The Sustainability Officer, Finance Officer or other authorized user selects a reporting period. The system calculates reuse, avoided purchases, recorded costs, waste diversion, asset life extension and carbon estimates using documented available data and the definitions in Section 6.3. Missing evidence is marked unavailable rather than counted as zero.
 Generate AI Report Summary
 The user selects a successfully generated report and requests a summary. The system submits only authorized report content to the AI service and displays the draft with its report reference and limitations. The user reviews, edits or rejects it. For example, a summary can describe monitor reuse while retaining the exact computed totals.
-4.13.3 Functional Requirements
+
+###4.13.3 Functional Requirements
 FR-15.1: The system shall allow authorized users to select an operational report type and a permitted department and date range.
 FR-15.2: The system shall provide operational reports for available assets, requests and reservations, approval decisions, completed and open transfers, maintenance history, custody changes, and asset states.
 FR-15.3: The system shall validate date ranges and department permissions before retrieving records or generating a report.
@@ -328,11 +367,14 @@ FR-15.14: The system shall display an error when AI summarization fails and reta
 FR-15.15: The system shall prevent an export or summary from exposing records or financial details outside the user's current permission scope.
 FR-15.16: The system shall preserve source records if report generation or export fails and display an error without presenting a failed result as a complete report.
 FR-15.17: The system shall record report generation, export and AI-summary decisions with the responsible user, timestamp and report reference.
-4.14 Authentication and Access Control
-4.14.1 Description and Priority
+
+##4.14 Authentication and Access Control
+
+###4.14.1 Description and Priority
 Users authenticate before accessing protected campus functions. The system enforces role and departmental scope for every operation, supports logout and inactivity expiry, and allows System Administrators to manage accounts and permissions and review security logs. Authentication does not automatically grant asset-custodian or approval authority.
 Priority: High (Must Have)
-4.14.2 Stimulus Response Sequences
+
+###4.14.2 Stimulus Response Sequences
 Log In
 The user submits account credentials. The system validates the active account, establishes a protected session, and shows only functions allowed by the assigned roles. Invalid credentials produce a generic error without revealing whether an account exists.
 Log Out
@@ -341,7 +383,8 @@ Manage User Accounts and Roles
 The System Administrator selects an account or creates a new one, specifies its active status, roles and departmental scope, and confirms. The system validates authority and values, saves the change with an audit record, and applies revised access immediately.
 Review Security Audit Log
 The System Administrator selects event and date filters. The system displays permitted login, access, permission-change and critical-operation events with their users and timestamps. For example, the administrator can review an attempted access to another department's assets.
-4.14.3 Functional Requirements
+
+###4.14.3 Functional Requirements
 FR-1.1: The system shall require a valid active user account and successful authentication before granting access to protected functions.
 FR-1.2: The system shall validate submitted credentials without displaying or storing plaintext passwords, in accordance with NFR-16.
 FR-1.3: The system shall display a generic authentication failure message for invalid credentials or inactive accounts without identifying which credential was incorrect.
@@ -359,18 +402,22 @@ FR-1.14: The system shall record successful and failed login attempts, logout or
 FR-1.15: The system shall prevent account changes from leaving the system without an active System Administrator.
 FR-1.16: The system shall preserve the previous account and permission configuration when validation or saving fails and display an appropriate error.
 FR-1.17: The system shall prevent user-facing messages and audit views from revealing passwords, session secrets or AI-service credentials.
-4.15 LLM Powered Assistant
-4.15.1 Description and Priority
+
+##4.15 LLM Powered Assistant
+
+###4.15.1 Description and Priority
 An optional natural-language assistant helps authenticated users find assets, ask record or policy questions, navigate system functions, and prepare resource requests. It retrieves only authorized information and passes any confirmed operation to the existing validated workflow. The core system remains usable without the assistant.
 Priority: Low (Could Have)
-4.15.2 Stimulus Response Sequences
+
+###4.15.2 Stimulus Response Sequences
 Search Assets Using Natural Language
 The user asks for an asset in ordinary language. The assistant interprets the request, asks for clarification when needed, searches authorized current listings, and returns referenced results. For example, “Find two monitors for our teaching lab” can open the same permitted search or matching results as the normal interface.
 Ask Asset or Policy Questions
 The user asks about an asset, request, transfer or approved campus procedure. The system retrieves permitted records or approved policy material and returns an answer with source references and uncertainty. If no supporting information exists, it says so and offers normal navigation.
 Prepare and Submit a Resource Request
 The assistant gathers the required request fields and displays a draft. The user reviews and explicitly confirms submission. The system rechecks authority and field validity and submits the draft through Resource Requests as Pending Approval, without reserving an asset or approving a transfer.
-4.15.3 Functional Requirements
+
+###4.15.3 Functional Requirements
 FR-14.1: The system shall allow authenticated authorized users to enter natural-language questions and requests for asset search, record information, policy guidance and system navigation.
 FR-14.2: The system shall limit assistant retrieval, answers and tool operations to the user's current role and departmental scope.
 FR-14.3: The system shall interpret a natural-language asset search and use the existing search or matching functionality to return accessible current listings.
@@ -388,7 +435,7 @@ FR-14.14: The system shall display an assistant-service error and retain access 
 FR-14.15: The system shall avoid sending credentials or unrelated restricted university records to the LLM service and record the responsible user and resulting request reference for a confirmed assistant operation.
 FR-14.16: The system shall prevent repeated confirmation of the same assistant draft from creating duplicate resource requests.
 
-Section 7
+#Section 7
 
 7.9 Asset Life Cycle Tracking
 Rules: History is append-only. Corrections reference the original event and preserve it. State updates must use the vocabulary in Section 6.2.1 and cannot bypass approvals or change transfer custody before receipt. A retired asset may proceed to an approved donation, recycling, or disposal workflow; a completed end-of-life event cannot be reversed by a generic edit.
