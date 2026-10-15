@@ -1,17 +1,20 @@
 Contribution:
 Sections 1 full, section 2 full, section 3 full, 4.1, 4.2, 4.3, section 5 full, section 6 full, 7.1, 7.2, 7.3, appendix A full, Appendix B full, Appendix C full
+
 Section 1: Introduction
 1.1 Purpose
 The purpose of this Software Requirements Specification (SRS) document is to define the functional and non-functional requirements of the Intelligent, AI-Powered Circular Campus Resource Exchange and Asset Life Cycle Management System. This document outlines the system's expected behavior, user roles, permissions, business rules, and sustainability objectives. It also includes a comprehensive UML use case diagram and detailed use case descriptions to support the upcoming design, development, and testing phases.
+
 1.2 Document Conventions
 This document follows the Software Requirements Specification (SRS) structure provided in the COSC 336 project guidelines. Functional requirements are identified using FR, non-functional requirements using NFR, business rules using BR, and use cases using UC. Requirements are written using "The system shall" to ensure clarity and testability. System features are assigned High, Medium, or Low priorities, which apply to their associated functional requirements unless otherwise specified.
+
 1.3 Intended Audience and Reading Suggestions
 This document is intended for project developers, instructors, stakeholders, testers, and future system users. Readers should begin with the introduction and overall system description, followed by the external interface requirements, functional and non-functional requirements, and business rules. The detailed use case descriptions and UML diagram provide additional information about system interactions and expected workflows.
+
 1.4 Product Scope
 The Circular Campus system aims to improve the management and reuse of university assets by allowing departments to register, publish, search, request, reserve, transfer, and maintain available resources. AI-powered features support asset classification, resource matching, and sustainability recommendations, while human users retain control over important decisions. The system aims to reduce unnecessary purchases, extend asset life cycles, minimize waste, and improve resource allocation across the university.
 
 1.5 AI declaration:
-
 AI tools were used to assist in identifying potentially overlooked functional requirements, use cases, and alternative flows to ensure the completeness of our requirements analysis. Additionally, AI was used to generate UML use case diagrams based on descriptions and instructions provided by our team, including the identification of actors, their interactions, and relationships between use cases. AI assisted with drafting, consistency checks and UML diagrams. The team remains responsible for reviewing the final requirements and diagrams before submission.
 The asset reuse rate equation was found by chatGPT.
 
@@ -32,9 +35,9 @@ The asset reuse rate equation was found by chatGPT.
 Section 2: Overall description
 2.1 Product Perspective
 The Intelligent, AI-Powered Circular Campus Resource Exchange and Asset Life Cycle Management System is a proposed web-based platform designed to improve resource sharing and asset management across Khalifa University. Rather than replacing an existing system, it is designed as a centralized solution that combines traditional asset management functions with AI-powered classification, resource matching, and sustainability recommendations. The system aims to connect university departments through a shared platform, reducing resource waste and improving the utilization of existing campus assets.
+
+
 2.2 Product functions:
-
-
 The feature number identifies its location in this report; the FR number retains the original requirement identity. Reporting uses feature 13 to match the team's final numbering. Authentication and the assistant are features 14 and 15. Priorities follow the Phase 2 prototype scope; advanced AI reporting and the assistant may be deferred while conventional operations remain available.
 Sec.	Feature	FR	Priority	Count
 4.1	Asset Registration	FR-2	High	17
@@ -52,8 +55,8 @@ Sec.	Feature	FR	Priority	Count
 4.13	Reporting	FR-15	Mixed	17
 4.14	Authentication and Access Control	FR-1	High	17
 4.15	LLM Powered Assistant	FR-14	Low	16
-2.3 Actors, and their concerns: 
 
+2.3 Actors, and their concerns: 
 Actor or Component	Role and Permissions	Main Concerns
 Asset Custodian and assigned Approver	Manage assigned assets; review requests and independently assigned end-of-life proposals.	Accurate stock, accountable decisions and custody.
 Lecturer or Departmental Administrator	Use only the roles and asset scopes explicitly assigned; no automatic inheritance of custodian privileges.	Suitable resources and clear permissions.
