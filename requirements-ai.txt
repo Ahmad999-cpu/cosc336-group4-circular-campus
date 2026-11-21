@@ -1,4 +1,0 @@
-# Install when you work on AI features (large download for sentence-transformers / torch).
--r requirements.txt
-anthropic>=0.40
-sentence-transformers>=3.0
