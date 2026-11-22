@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block content %}<section class="page narrow">
+{% translate "We couldn't find that page" as t1 %}{% translate "It may have been moved, or the link is incomplete." as t2 %}{% url 'web:home' as home %}{% translate "Back to the start page" as t3 %}
+{% empty_state t1 t2 home t3 %}
+</section>{% endblock %}

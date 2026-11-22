@@ -1,0 +1,5 @@
+﻿name,category,unit,quantity,condition,campus,building,room,value_aed,purchase_date,serial_number,external_ref,description,specifications,tags
+Lenovo 24-inch monitor,IT Equipment / Monitors,Computer Science,3,GOOD,Main,B1,1.20,620,2022-03-01,LN-24-001,,Spare monitors,"24 in, HDMI","monitor, 24-inch"
+Lab stool,Stools,Chemistry,6,FAIR,Main,B4,Lab 2,150,,,,,,
+Dell 24-inch monitor,IT Equipment / Monitors,Computer Science,1,GOOD,Main,B1,1.12,650,,,,,,
+Projector,Projectors,Library,two,GOOD,SAN,,,,,,,,,

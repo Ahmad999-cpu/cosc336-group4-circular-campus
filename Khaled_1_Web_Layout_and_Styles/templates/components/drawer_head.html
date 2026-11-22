@@ -1,0 +1,4 @@
+{% load i18n ui %}<div class="drawer-head">
+  <div>{% if kicker %}<span class="meta">{{ kicker }}</span>{% endif %}<h2 id="drawer-title">{{ title }}</h2></div>
+  <button class="close" type="button" data-drawer-close aria-label="{% translate 'Close' %}">{% icon "close" 18 "currentColor" "2.4" %}</button>
+</div>

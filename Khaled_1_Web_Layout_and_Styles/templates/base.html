@@ -1,0 +1,80 @@
+{% load i18n static ui %}{% get_current_language as LANG %}{% get_current_language_bidi as RTL %}<!DOCTYPE html>
+<html lang="{{ LANG }}" dir="{% if RTL %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Circular Campus{% endblock %}</title>
+  {% include "guest/_icons.html" %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  {% block head %}{% endblock %}
+  <script src="{% static 'vendor/htmx-2.0.4.min.js' %}" defer></script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<div class="progress" id="progress" aria-hidden="true"><i></i></div>
+<a class="skip" href="#main">{% translate "Skip to content" %}</a>
+
+<header class="appbar">
+  <div class="appbar-inner">
+    <a class="brand" href="{% url 'web:home' %}">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#E5323B"/><path d="M23.5 13.2A8 8 0 1 0 24 17" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M24.6 8.6v5h-5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Circular Campus</span>
+    </a>
+    {% if user.is_authenticated %}
+    <nav class="nav" aria-label="{% translate 'Main' %}">
+      {% for item in nav_items %}<a href="{{ item.url }}" data-nav="{{ item.key }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}<span class="count tnum"{% if not item.count %} hidden{% endif %}>{{ item.count|num }}</span></a>{% endfor %}
+    </nav>
+    {% else %}<span style="flex:1"></span>{% endif %}
+    <div class="bar-tools">
+      {% if user.is_authenticated %}
+      <a class="who" href="{% url 'access:password' %}" title="{% translate 'Change password' %}" style="text-decoration:none"><b>{{ user.full_name }}</b><span>{{ my_roles|join:", "|default:_("No role yet") }}</span></a>
+      {% endif %}
+      {% if not user.is_authenticated and request.resolver_match.url_name != "login" %}<a class="lang signin-link" href="{% url 'access:login' %}">{% translate "Sign in" %}</a>{% endif %}
+      <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        {% if LANG == "ar" %}<button class="lang" name="language" value="en" lang="en">English</button>
+        {% else %}<button class="lang" name="language" value="ar" lang="ar">العربية</button>{% endif %}
+      </form>
+      {% if user.is_authenticated %}
+      <div style="position: relative">
+        <button class="icon-btn" id="bell" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="notes"
+          aria-label="{% translate 'Notifications' %}{% if unread_notifications %}, {{ unread_notifications }} {% translate 'unread' %}{% endif %}">
+          {% icon "bell" 22 %}
+          <span class="dot tnum"{% if not unread_notifications %} hidden{% endif %}>{{ unread_notifications|num }}</span>
+        </button>
+        <div class="popover" id="notes" hidden>
+          <header><h2>{% translate "Notifications" %}</h2>
+            {% if unread_notifications %}<form method="post" action="{% url 'notifications:read_all' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="linkish" type="submit">{% translate "Mark all as read" %}</button></form>{% endif %}
+          </header>
+          {% for n in recent_notifications %}
+            <a class="note{% if not n.read_at %} unread{% endif %}" href="{% url 'notifications:open' n.pk %}"><div>{{ n.text }}<time datetime="{{ n.created_at|date:'c' }}">{% blocktranslate with t=n.created_at|timesince %}{{ t }} ago{% endblocktranslate %}</time></div></a>
+          {% empty %}<p class="note">{% translate "You're all caught up." %}</p>{% endfor %}
+          {% if all_notes_url %}<a class="all" href="{{ all_notes_url }}">{% translate "See all notifications" %}</a>{% endif %}
+        </div>
+      </div>
+      <form action="{% url 'access:logout' %}" method="post">{% csrf_token %}
+        <button class="icon-btn" aria-label="{% translate 'Sign out' %}" title="{% translate 'Sign out' %}">{% icon "logout" 20 %}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+
+{% block footer %}
+<footer class="foot-note">
+  <span>{% translate "Circular Campus · Smarter resource reuse" %}</span>
+  {% if debug %}<span>{% translate "Sample data. Figures are estimates for demonstration." %}</span>{% endif %}
+</footer>
+{% endblock %}
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden></aside>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+{% flash_messages %}
+</body>
+</html>

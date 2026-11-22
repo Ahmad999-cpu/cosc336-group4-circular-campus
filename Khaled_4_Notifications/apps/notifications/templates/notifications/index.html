@@ -1,0 +1,34 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Notifications" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page narrow">
+  <div class="page-head">
+    <div><h1>{% translate "Notifications" %}</h1><p>{% translate "Requests, approvals, deliveries and repairs that involve you. Open one to go straight to it." %}</p></div>
+    {% if unread %}
+    <form method="post" action="{% url 'notifications:read_all' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button class="btn btn-ghost" type="submit">{% icon "check" 18 %} {% translate "Mark all as read" %}</button>
+    </form>
+    {% endif %}
+  </div>
+  <nav class="seg" aria-label="{% translate 'Show' %}" style="max-width:360px;margin-bottom:18px">
+    <a href="?show=all" {% if show == "all" %}aria-current="true"{% endif %}>{% translate "All" %}</a>
+    <a href="?show=unread" {% if show == "unread" %}aria-current="true"{% endif %}>{% blocktranslate %}Unread ({{ unread }}){% endblocktranslate %}</a>
+  </nav>
+  {% for key, notes in groups %}
+    <h2 class="section-title">{{ labels|get:key }}</h2>
+    <ul class="inbox panel">
+      {% for n in notes %}
+      <li><a class="inbox-item{% if not n.read_at %} unread{% endif %}" href="{% url 'notifications:open' n.pk %}">
+        <span class="inbox-icon t-{{ n.event_type|lower }}">{% icon n.icon 18 %}</span>
+        <span class="inbox-text"><b>{{ n.get_event_type_display }}</b><span>{{ n.text }}</span></span>
+        <time datetime="{{ n.created_at|date:'c' }}" title="{{ n.created_at|date:'j M Y, H:i' }}">{% if key == "earlier" %}{{ n.created_at|date:"j M" }}{% else %}{{ n.created_at|time:"H:i" }}{% endif %}</time>
+        {% if not n.read_at %}<span class="sr">{% translate "Unread" %}</span>{% endif %}
+      </a></li>
+      {% endfor %}
+    </ul>
+  {% empty %}
+    {% if show == "unread" %}{% translate "You're all caught up" as t1 %}{% translate "Nothing new since you last looked." as t2 %}{% url 'notifications:index' as u %}{% translate "See all" as l %}{% empty_state t1 t2 u l %}
+    {% else %}{% translate "No notifications yet" as t1 %}{% translate "You'll hear here when a request you're part of moves on." as t2 %}{% empty_state t1 t2 %}{% endif %}
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% load i18n %}{% translate "Propose end of life" as t %}{% include "components/drawer_head.html" with title=t kicker=asset.name %}
+<form class="drawer-body" hx-post="{% url 'lifecycle:propose' asset.pk %}" hx-target="#drawer" novalidate>
+  <p class="meta">{% translate "Someone other than you reviews it. Nothing changes until it's approved and you record that it happened." %}</p>
+  {% for f in form %}{% include "access/_field.html" %}{% endfor %}
+  <button class="btn btn-red" type="submit" data-autofocus>{% translate "Send for review" %}</button>
+</form>

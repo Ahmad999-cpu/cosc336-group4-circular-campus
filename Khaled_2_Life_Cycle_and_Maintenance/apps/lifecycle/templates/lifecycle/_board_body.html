@@ -1,0 +1,69 @@
+{% load i18n ui %}
+<nav class="seg" aria-label="{% translate 'Show' %}" style="max-width:440px;margin-bottom:18px">
+  <a href="?tab=maintenance" {% if tab == "maintenance" %}aria-current="true"{% endif %}>{% translate "Maintenance" %} ({{ open|length|num }})</a>
+  <a href="?tab=eol" {% if tab == "eol" %}aria-current="true"{% endif %}>{% translate "End of life" %}</a>
+</nav>
+{% if tab == "maintenance" %}
+  {% if open %}
+  <div class="list">
+  {% for rec in open %}
+    <article class="panel req">
+      <div class="req-top">
+        <div><span class="meta">{{ rec.get_record_type_display }} · {{ rec.asset.owner_department.name }} · {% blocktranslate with t=rec.opened_at|timesince %}{{ t }} ago{% endblocktranslate %}</span>
+          <h3><a href="{% url 'lifecycle:history' rec.asset.pk %}" style="color:inherit">{{ rec.asset.name }}</a></h3>
+          <p class="meta">{{ rec.description }}</p></div>
+        <div class="row">{% if rec.severity == "HIGH" or rec.severity == "CRITICAL" %}{% pill "red" rec.get_severity_display %}{% else %}{% pill "mute" rec.get_severity_display %}{% endif %}
+          {% if rec.status == "REPAIR_COMPLETED" %}{% pill "ok" rec.get_status_display %}{% elif rec.status == "IN_PROGRESS" %}{% pill "info" rec.get_status_display %}{% else %}{% pill "warn" rec.get_status_display %}{% endif %}</div>
+      </div>
+      {% for rp in rec.repairs.all %}<p class="meta">{% icon "wrench" 14 %} {{ rp.description }} · {{ rp.get_outcome_display }} · {{ rp.cost|aed }}</p>{% endfor %}
+      <div class="actions">
+        {% if rec.status == "DEFECT_REPORTED" or rec.status == "INSPECTION_REQUESTED" or rec.status == "FURTHER_REPAIR_REQUIRED" %}
+          <button class="btn btn-navy sm" hx-post="{% url 'lifecycle:start' rec.pk %}" hx-target="#board">{% translate "Start work" %}</button>
+        {% elif rec.status == "IN_PROGRESS" %}
+          <button class="btn btn-red sm" type="button" data-toggle="rp-{{ rec.pk }}" aria-expanded="false" aria-controls="rp-{{ rec.pk }}">{% translate "Record repair" %}</button>
+        {% elif rec.status == "REPAIR_COMPLETED" %}
+          <form class="actions" hx-post="{% url 'lifecycle:back' rec.pk %}" hx-target="#board">
+            <label class="sr" for="bc-{{ rec.pk }}">{% translate "Condition after repair" %}</label>
+            <select class="input" id="bc-{{ rec.pk }}" name="condition" style="min-height:36px;width:auto">{% for v, l in return_form.fields.condition.choices %}<option value="{{ v }}" {% if v == rec.current_condition %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+            <button class="btn btn-red sm" type="submit">{% translate "Back in service" %}</button>
+          </form>
+        {% endif %}
+      </div>
+      {% if rec.status == "IN_PROGRESS" %}
+      <div class="collapse inline-form" id="rp-{{ rec.pk }}"><div><form class="inner form-grid" hx-post="{% url 'lifecycle:repair' rec.pk %}" hx-target="#board">
+        {% for f in repair_form %}{% include "access/_field.html" %}{% endfor %}
+        <div class="wide"><button class="btn btn-navy sm" type="submit">{% translate "Save repair" %}</button></div>
+      </form></div></div>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </div>
+  {% else %}
+  {% translate "Nothing needs fixing" as t1 %}{% translate "Problems reported from an asset's page appear here." as t2 %}{% empty_state t1 t2 %}
+  {% endif %}
+  {% if closed %}<h2 class="section-title" style="margin-top:24px">{% translate "Recently closed" %}</h2>
+  <div class="list">{% for rec in closed %}<div class="panel spread" style="padding:12px 16px"><span><b>{{ rec.asset.name }}</b> · {{ rec.description|truncatechars:60 }}</span><span class="meta">{{ rec.opened_at|date:"j M" }}</span></div>{% endfor %}</div>{% endif %}
+{% else %}
+  {% if proposals %}
+  <div class="panel queue"><table>
+    <thead><tr><th scope="col">{% translate "Asset" %}</th><th scope="col">{% translate "Proposal" %}</th><th scope="col">{% translate "Status" %}</th><th scope="col">{% translate "Next step" %}</th></tr></thead>
+    <tbody>{% for p in proposals %}<tr>
+      <td><a href="{% url 'lifecycle:history' p.asset.pk %}" style="color:inherit;font-weight:700">{{ p.asset.name }}</a><span class="hint">{{ p.asset.owner_department.name }}</span></td>
+      <td>{{ p.get_action_type_display }}<span class="hint">{{ p.reason|truncatechars:80 }} · {{ p.proposed_by.full_name }}</span></td>
+      <td>{% if p.status == "PENDING_REVIEW" %}{% pill "warn" p.get_status_display %}{% elif p.status == "APPROVED" %}{% pill "info" p.get_status_display %}{% else %}{% pill "ok" p.get_status_display %}{% endif %}</td>
+      <td>
+        {% if p.status == "PENDING_REVIEW" and can_eol_approve %}
+          {% if p.proposed_by_id == user.pk %}<span class="hint">{% translate "Your proposal: someone else reviews it." %}</span>{% else %}
+          <form class="actions" hx-post="{% url 'lifecycle:decide' p.pk %}" hx-target="#board">
+            <label class="sr" for="dr-{{ p.pk }}">{% translate "Reason" %}</label><input class="input" id="dr-{{ p.pk }}" name="reason" placeholder="{% translate 'Reason (needed to reject)' %}" style="min-height:36px;width:200px">
+            <button class="btn btn-navy sm" name="decision" value="approve">{% translate "Approve" %}</button>
+            <button class="btn btn-ghost sm" name="decision" value="reject">{% translate "Reject" %}</button>
+          </form>{% endif %}
+        {% elif p.status == "APPROVED" %}
+          <button class="btn btn-red sm" hx-post="{% url 'lifecycle:complete' p.pk %}" hx-target="#board">{% translate "Record it's done" %}</button>
+        {% else %}<span class="meta">{{ p.decided_at|date:"j M Y" }}</span>{% endif %}
+      </td></tr>{% endfor %}</tbody></table></div>
+  {% else %}
+  {% translate "No end-of-life proposals" as t1 %}{% translate "Custodians propose retiring, donating, recycling or disposing of an item from its history page. Someone else reviews it." as t2 %}{% empty_state t1 t2 %}
+  {% endif %}
+{% endif %}

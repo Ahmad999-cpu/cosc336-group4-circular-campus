@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block content %}
+<section class="band" aria-labelledby="hero-h">
+  <svg class="loop" viewBox="0 0 600 600" aria-hidden="true"><path d="M480 300a180 180 0 1 1-52.7-127.3M436 116v62h-62" fill="none" stroke="#7EA6CE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="band-inner{% if not can_request or not find_url %} single{% endif %}">
+    <div>
+      <h1 class="statement" id="hero-h"><span><i>{% translate "Stop buying" %}</i></span><span><i>{% translate "what you" %}</i></span><span><i>{% translate "already own." %}</i></span></h1>
+      <p class="lede">{% blocktranslate with name=user.full_name %}Welcome, {{ name }}. Describe what your team needs and we search every department's surplus first.{% endblocktranslate %}</p>
+    </div>
+    {% if can_request and find_url %}
+    <div class="ask">
+      <h2>{% translate "What do you need?" %}</h2>
+      <p>{% translate "Plain words, English or Arabic. Mention a quantity or size if it matters." %}</p>
+      <form action="{{ find_url }}" method="get">
+        <label class="sr" for="need">{% translate "Describe what you need" %}</label>
+        <textarea id="need" name="q" rows="2" required placeholder="{% translate 'Two 24-inch monitors for the robotics club workstation' %}"></textarea>
+        <div class="spread"><span class="meta">{% translate "Matches are ranked by fit and explained." %}</span><button class="btn btn-red">{% translate "Find matches" %}</button></div>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<section class="page">
+  {% if shortcuts %}
+  <h2 class="section-title">{% translate "Your work" %}</h2>
+  <div class="hub">
+    {% for s in shortcuts %}
+    <a class="hub-card" href="{{ s.url }}" data-reveal>
+      <span class="hub-top"><span class="hub-ico">{% icon s.icon 24 "currentColor" "2" %}</span>
+        {% if s.count %}<span class="hub-count tnum" aria-label="{% blocktranslate with n=s.count %}{{ n }} waiting{% endblocktranslate %}">{{ s.count|num }}</span>{% endif %}</span>
+      <span class="hub-body"><b>{{ s.title }}</b><span>{{ s.text }}</span></span>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  {% translate "Nothing to show yet" as t1 %}{% if has_role %}{% translate "Your screens appear here as each part of the system is switched on." as t2 %}{% else %}{% translate "Your account has no role yet. Ask a System Administrator to assign one." as t2 %}{% endif %}
+  {% empty_state t1 t2 %}
+  {% endif %}
+</section>
+{% endblock %}
