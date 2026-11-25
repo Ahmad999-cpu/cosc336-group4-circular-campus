@@ -1,0 +1,6 @@
+{% load i18n %}{% if asset %}{% blocktranslate with name=asset.name asvar t %}Request {{ name }}{% endblocktranslate %}{% else %}{% translate "New request" as t %}{% endif %}
+{% include "components/drawer_head.html" with title=t %}
+<form class="drawer-body" hx-post="{% url 'resource_requests:new' %}" hx-target="#drawer" novalidate>
+  {% include "resource_requests/_form_fields.html" %}
+  <button class="btn btn-red" type="submit" data-autofocus>{% translate "Send request" %}</button>
+</form>
