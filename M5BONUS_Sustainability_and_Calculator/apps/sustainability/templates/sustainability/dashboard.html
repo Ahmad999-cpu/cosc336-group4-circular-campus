@@ -1,0 +1,67 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Impact" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "Impact" %}</h1><p>{% translate "What reuse at the university has saved. Every figure shows how it's calculated and where the numbers come from." %}</p></div>
+    <a class="btn btn-ghost" href="{% url 'sustainability:calculator' %}">{% icon "chart" 18 %} {% translate "Savings calculator" %}</a>
+  </div>
+  <nav class="seg" aria-label="{% translate 'Period' %}" style="max-width:620px;margin-bottom:18px">
+    {% for k, label in periods %}<a href="?period={{ k }}" {% if period == k %}aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}
+  </nav>
+
+  <div class="tiles impact-tiles">
+    {% for m in d.measures %}
+    <article class="panel tile{% if forloop.first %} hero{% endif %}" data-reveal>
+      <span class="meta">{{ m.label }}{% if m.is_estimate %} · <span class="est">{% translate "estimate" %}</span>{% endif %}</span>
+      {% if m.value is None %}<span class="num na">{% translate "Unavailable" %}</span>
+      {% elif m.unit == "AED" %}<span class="num tnum">{{ m.value|aed }}</span>
+      {% elif m.unit == "%" %}<span class="num tnum">{{ m.value }}%</span>
+      {% else %}<span class="num tnum" data-count="{{ m.value }}">{{ m.value|num }}</span><span class="meta">{{ m.unit }}</span>{% endif %}
+      {% if m.note %}<span class="meta small">{{ m.note }}</span>{% endif %}
+      <button class="disclose" type="button" data-toggle="fx-{{ m.key }}" aria-expanded="false" aria-controls="fx-{{ m.key }}">{% translate "How it's calculated" %} {% icon "chev" 14 %}</button>
+      <div class="collapse" id="fx-{{ m.key }}"><div>
+        <p class="formula"><b>{{ m.formula }}</b></p>
+        <p class="formula">{% translate "Source:" %} {{ m.source }}</p>
+        {% if m.coverage %}<p class="formula">{% blocktranslate with c=m.coverage %}Covers {{ c }} moved.{% endblocktranslate %}</p>{% endif %}
+      </div></div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="split">
+    <article class="panel chart pad" data-reveal>
+      <h2>{% translate "Items reused per month" %}</h2>
+      <div class="bars" role="img" aria-label="{% translate 'Units reused in each of the last six months' %}">
+        {% for m in d.by_month %}
+        <div class="barcol{% if forloop.last %} now{% endif %}"><span class="val tnum">{{ m.units|num }}</span>
+          <span class="bar" style="height:{% if m.units %}{{ m.share|default:0 }}{% else %}0{% endif %}%" title="{{ m.month|date:'F Y' }}: {{ m.units }}"></span>
+          <span class="lab">{{ m.month|date:"M" }}</span></div>
+        {% endfor %}
+      </div>
+    </article>
+    <article class="panel pad" data-reveal>
+      <h2>{% translate "By category" %}</h2>
+      {% if d.by_category %}
+      <ul class="catbars">
+        {% for c in d.by_category %}
+        <li><div class="lab"><span>{{ c.category }}</span><b class="tnum">{{ c.units }}</b></div>
+          <div class="track"><i style="width:{{ c.share }}%"></i></div>
+          <span class="meta small">{{ c.aed|aed }}{% if c.co2e %} · {{ c.co2e|floatformat:0 }} kg CO2e{% endif %}</span></li>
+        {% endfor %}
+      </ul>
+      {% else %}<p class="meta">{% translate "Nothing has been received in this period yet. Figures appear when a receiver confirms a transfer." %}</p>{% endif %}
+    </article>
+  </div>
+
+  <article class="panel pad" style="margin-top:18px" data-reveal>
+    <h2>{% translate "Locally selected carbon factors" %}</h2>
+    <p class="meta">{% translate "Carbon and waste figures use these factors only. Each has a source, a date and a boundary. Items in a category without a factor are left out and the tile says so." %}</p>
+    <div class="queue"><table>
+      <thead><tr><th scope="col">{% translate "Category" %}</th><th scope="col">{% translate "kg CO2e per unit" %}</th><th scope="col">{% translate "Typical mass" %}</th><th scope="col">{% translate "Boundary" %}</th><th scope="col">{% translate "Source" %}</th><th scope="col">{% translate "Used here" %}</th></tr></thead>
+      <tbody>{% for f in d.factors %}<tr><td>{{ f.category.display_name|default:f.category.name }}</td><td class="tnum">{{ f.kg_co2e_per_unit|floatformat:0 }}</td><td class="tnum">{% if f.mass_kg_per_unit is not None %}{{ f.mass_kg_per_unit|floatformat:"-1" }} {% translate "kg" %}{% else %}–{% endif %}</td><td>{{ f.boundary|default:"–" }}</td><td>{{ f.source }} <span class="hint">{{ f.source_date|date:"M Y" }}</span></td><td>{% if f.used %}{% icon "check" 16 %}<span class="sr">{% translate "Yes" %}</span>{% else %}–{% endif %}</td></tr>
+      {% empty %}<tr><td colspan="6">{% translate "No factors yet. Carbon and waste stay unavailable until one is added." %}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </article>
+</section>
+{% endblock %}

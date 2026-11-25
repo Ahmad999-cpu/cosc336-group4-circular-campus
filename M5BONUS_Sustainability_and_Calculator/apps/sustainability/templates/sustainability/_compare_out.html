@@ -1,0 +1,21 @@
+{% load i18n ui %}
+<div class="verdict v-{{ nc.feasible }}">
+  {% if nc.feasible == "no" %}{% icon "close" 20 %}<div><b>{% translate "Not feasible right now" %}</b>
+  {% elif nc.feasible == "repair" %}{% icon "wrench" 20 %}<div><b>{% translate "Feasible after a repair" %}</b>
+  {% else %}{% icon "check" 20 %}<div><b>{% translate "Feasible" %}</b>{% endif %}
+  {% for r in nc.reasons %}<span>{{ r }}</span>{% empty %}<span>{% blocktranslate with n=nc.lead_days %}Ready in about {{ n }} days.{% endblocktranslate %}</span>{% endfor %}</div>
+</div>
+<div class="costbox" style="margin-top:14px">
+  <div class="line"><span>{% blocktranslate with q=nc.quantity %}Buy {{ q }} new{% endblocktranslate %}</span><span class="tnum">{{ nc.buy_new|aed }}</span></div>
+  <div class="vsbar"><i style="width:{{ new_w }}%"></i></div>
+  <div class="line"><span>{% translate "Reuse: transport + storage + repair" %}</span><span class="tnum">{{ nc.reuse_total|aed }}</span></div>
+  <div class="vsbar reuse"><i style="width:{{ reuse_w }}%"></i></div>
+  <div class="total"><span>{% if nc.reuse_wins %}{% translate "Reuse saves" %}{% elif nc.avoided is None %}{% translate "Saving" %}{% else %}{% translate "Buying new saves" %}{% endif %}</span>
+    <b class="tnum">{% if nc.avoided is None %}{% translate "unavailable" %}{% elif nc.reuse_wins %}{{ nc.avoided|aed }}{% if nc.avoided_pct is not None %} <small>({{ nc.avoided_pct }}%)</small>{% endif %}{% else %}{{ nc.avoided_abs|aed }}{% endif %}</b></div>
+  {% if nc.co2e_kg is not None %}<p class="note-line">{% blocktranslate with c=nc.co2e_kg|floatformat:0 %}About {{ c }} kg CO2e not emitted by making new ones (locally selected factor).{% endblocktranslate %}</p>{% endif %}
+  <p class="note-line">{% translate "Estimate. Every input is listed below and can be changed." %}</p>
+</div>
+<dl class="kv" style="margin-top:14px">{% for k, v in nc.inputs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>
+{% if nc.feasible != "no" %}
+<a class="btn btn-red" style="margin-top:16px;width:100%" hx-get="{% url 'resource_requests:new' %}?asset={{ a.pk }}&qty={{ nc.quantity }}" hx-target="#drawer">{% translate "Request it" %}</a>
+{% endif %}

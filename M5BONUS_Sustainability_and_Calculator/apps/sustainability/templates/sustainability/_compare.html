@@ -1,0 +1,17 @@
+{% load i18n ui %}
+{% translate "Reuse or buy new?" as kicker %}{% include "components/drawer_head.html" with title=a.name %}
+<div class="drawer-body">
+  <form id="nc-form" class="nc-form" hx-get="{% url 'sustainability:compare' a.pk %}" hx-target="#nc-out" hx-trigger="input changed delay:200ms, change">
+    <div class="grid2">
+      <label class="field" for="nc-qty">{% translate "How many" %}<input class="input" id="nc-qty" name="qty" type="number" min="1" max="999" value="{{ qty }}"></label>
+      <label class="field" for="nc-campus">{% translate "Deliver to campus" %}<input class="input" id="nc-campus" name="campus" value="{{ campus }}" placeholder="{{ a.location_campus }}"></label>
+      <label class="field" for="nc-price">{% translate "New price per unit (AED)" %}<input class="input" id="nc-price" name="price" inputmode="decimal" placeholder="{{ a.estimated_value|floatformat:0 }}" value="{{ g.price }}"></label>
+      <label class="field" for="nc-date">{% translate "Needed by" %}<input class="input" id="nc-date" name="needed_by" type="date" value="{{ needed_by }}"></label>
+      <label class="field" for="nc-transport">{% translate "Transport (AED)" %}<input class="input" id="nc-transport" name="transport" inputmode="decimal" placeholder="{{ nc.transport|floatformat:0 }}" value="{{ g.transport }}"></label>
+      <label class="field" for="nc-storage">{% translate "Storage (AED)" %}<input class="input" id="nc-storage" name="storage" inputmode="decimal" placeholder="0" value="{{ g.storage }}"></label>
+      <label class="field" for="nc-repair">{% translate "Repair (AED)" %}<input class="input" id="nc-repair" name="repair" inputmode="decimal" placeholder="{{ nc.repair|floatformat:0 }}" value="{{ g.repair }}"></label>
+    </div>
+    <p class="meta small">{% translate "Leave a box empty to use the default shown in grey." %}</p>
+  </form>
+  <div id="nc-out" aria-live="polite">{% include "sustainability/_compare_out.html" %}</div>
+</div>
