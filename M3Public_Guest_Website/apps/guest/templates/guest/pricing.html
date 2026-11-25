@@ -1,0 +1,47 @@
+{% extends "guest/base.html" %}{% load i18n static %}
+{% block title %}{{ brand }} · {% translate "Pricing" %}{% endblock %}
+{% block content %}
+{% with p=pricing %}
+<section class="g-section g-pricing" id="pricing" aria-labelledby="g-price-h" data-pricing data-month="{% translate '/month' %}" data-quote="{% translate 'Contact for a reduced price' %}">
+  <div class="g-wrap">
+    <h2 id="g-price-h" class="g-h2 center">{% translate "Pricing" %}</h2>
+    <p class="g-price-sub">{% translate "One monthly subscription covers all your sites and users." %}</p>
+    <div class="g-price-controls">
+      <div class="g-pick">
+        <button class="g-btn g-btn-red g-pick-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="g-pick-menu">
+          {% translate "Pick institution type" %}<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <ul class="g-pick-menu" id="g-pick-menu" hidden>
+          {% for key, label in p.types %}<li><a href="?type={{ key }}{% if p.vat %}&amp;vat=1{% endif %}#pricing" data-type="{{ key }}"{% if key == p.type %} aria-current="true"{% endif %}>{{ label }}</a></li>{% endfor %}
+        </ul>
+      </div>
+      <a class="g-btn g-btn-red g-vat-btn" href="?type={{ p.type }}{% if not p.vat %}&amp;vat=1{% endif %}#pricing" role="button" aria-pressed="{% if p.vat %}true{% else %}false{% endif %}"
+         data-on="{% translate 'Show prices without VAT' %}" data-off="{% blocktranslate with pct=p.vat_pct %}Show prices with {{ pct }}% VAT{% endblocktranslate %}">{% if p.vat %}{% translate "Show prices without VAT" %}{% else %}{% blocktranslate with pct=p.vat_pct %}Show prices with {{ pct }}% VAT{% endblocktranslate %}{% endif %}</a>
+    </div>
+    <p class="g-price-for" aria-live="polite">{% translate "Prices for:" %} <b data-type-label>{{ p.type_label }}</b> · <span data-vat-note data-on="{% blocktranslate with pct=p.vat_pct %}including {{ pct }}% VAT{% endblocktranslate %}" data-off="{% translate 'excluding VAT' %}">{% if p.vat %}{% blocktranslate with pct=p.vat_pct %}including {{ pct }}% VAT{% endblocktranslate %}{% else %}{% translate "excluding VAT" %}{% endif %}</span></p>
+    <div class="g-plans">
+      {% for c in p.cards %}
+      <article class="g-plan">
+        <h3>{{ c.band }}</h3>
+        <p class="g-plan-price" data-band="{{ forloop.counter0 }}">{% if c.price %}<b>{{ c.price }}</b><span>{% translate "/month" %}</span>{% else %}<b class="g-plan-quote">{% translate "Contact for a reduced price" %}</b>{% endif %}</p>
+        <a class="g-btn g-btn-red g-plan-go" href="{% if c.price %}{{ guest_cta_url }}{% else %}{% url 'guest:contact' %}{% endif %}" data-go-price="{{ guest_cta_url }}" data-go-contact="{% url 'guest:contact' %}"
+           data-label-price="{% translate 'Get started' %}" data-label-contact="{% translate 'Contact us' %}">{% if c.price %}{% translate "Get started" %}{% else %}{% translate "Contact us" %}{% endif %}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+  {{ p.data|json_script:"g-price-data" }}
+</section>
+{% endwith %}
+
+<section class="g-quote-band" aria-labelledby="g-quote-h">
+  <div class="g-wrap g-quote-inner">
+    <h2 id="g-quote-h">{% translate "Over 10,000 employees?" %}</h2>
+    <p>{% translate "Get in touch for a quote." %}</p>
+    <div class="g-ctas">
+      <a class="g-btn g-btn-neon-white" href="{% url 'guest:contact' %}">{% translate "Contact us" %}</a>
+      <a class="g-btn g-btn-neon-white" href="{% url 'sustainability:calculator' %}">{% translate "Estimate savings" %}</a>
+    </div>
+  </div>
+</section>
+{% include "guest/_cta_band.html" %}
+{% endblock %}
