@@ -1,9 +1,0 @@
-{% extends "base.html" %}{% load i18n %}
-{% block title %}{% translate "Sustainable actions" %} · {{ a.name }} · Circular Campus{% endblock %}
-{% block content %}
-<section class="page narrow">
-  <p class="crumbs"><a href="{% url 'catalogue:panel' a.pk %}">{{ a.name }}</a> › {% translate "Sustainable actions" %}</p>
-  <div class="page-head"><div><h1>{% translate "Sustainable actions" %}</h1></div></div>
-  <div class="panel pad stack">{% include "sustainability/_advice_body.html" %}</div>
-</section>
-{% endblock %}
