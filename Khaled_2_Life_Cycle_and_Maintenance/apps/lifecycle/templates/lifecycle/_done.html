@@ -1,0 +1,6 @@
+{% load i18n ui %}{% translate "Done" as t %}{% include "components/drawer_head.html" with title=t kicker=asset.name %}
+<div class="drawer-body">
+  <p>{{ text }}</p>
+  <div class="actions"><a class="btn btn-navy" href="{% url 'lifecycle:history' asset.pk %}">{% translate "See its history" %}</a>
+    <button class="btn btn-ghost" type="button" data-drawer-close>{% translate "Close" %}</button></div>
+</div>
