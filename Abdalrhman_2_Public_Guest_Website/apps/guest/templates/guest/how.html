@@ -1,0 +1,75 @@
+{% extends "guest/base.html" %}{% load i18n static %}
+{% block title %}{% translate "How it works" %} · {{ brand }}{% endblock %}
+{% block content %}
+<section class="g-intro" aria-labelledby="g-how-h">
+  <div class="g-wrap center">
+    <p class="g-kicker">{% translate "How it works" %}</p>
+    <h1 id="g-how-h" class="g-display">{% translate "One campus. More possibilities. Less waste." %}</h1>
+    <p class="g-lede">{% blocktranslate %}{{ brand }} connects departments to share resources, give assets a longer life and make every purchase count.{% endblocktranslate %}</p>
+  </div>
+</section>
+
+<section class="g-wrap" aria-label="{% translate 'The catalogue' %}">
+  <figure class="g-feature">
+    {% get_current_language as L %}<img src="{% if L == 'ar' %}{% static 'img/guest/browse-ar.png' %}{% else %}{% static 'img/guest/browse.png' %}{% endif %}" alt="{% translate 'The browse page, showing monitors, chairs and lab equipment that departments have listed for reuse' %}" width="1440" height="900">
+    <figcaption><span>{% translate "Somewhere on this campus, your next purchase is already gathering dust." %}</span></figcaption>
+    <span class="g-demo-tag">{% translate "Demo data" %}</span>
+  </figure>
+</section>
+
+<section class="g-steps" aria-labelledby="g-steps-h">
+  <h2 id="g-steps-h" class="sr">{% translate "Four steps" %}</h2>
+  <article class="g-wrap g-step">
+    <div class="g-step-text">
+      <p class="g-kicker">{% translate "Step 1" %}</p>
+      <h3 class="g-h2">{% translate "Find an item" %}</h3>
+      <p>{% translate "Browse the catalogue or describe what you need in plain words, in English or Arabic. Matches are ranked by how well they fit, with a short reason for each, and you can filter by category, campus and condition." %}</p>
+      <a class="g-btn g-btn-red" href="{{ guest_cta_url }}">{% translate "Explore the platform" %}</a>
+    </div>
+    {% translate "Search results for monitors, each with a match score and a reason" as alt %}{% include "guest/_shot.html" with img="step-find" alt=alt %}
+  </article>
+  <article class="g-wrap g-step flip">
+    <div class="g-step-text">
+      <p class="g-kicker">{% translate "Step 2" %}</p>
+      <h3 class="g-h2">{% translate "List extra items" %}</h3>
+      <p>{% translate "Departments register usable items they no longer need: what it is, how many, its condition and where it is. Once the custodian confirms the condition, they publish it and every other department can see it. Many items can be added at once from a spreadsheet." %}</p>
+    </div>
+    {% translate "A department's asset list with register and publish actions" as alt %}{% include "guest/_shot.html" with img="step-list" alt=alt %}
+  </article>
+  <article class="g-wrap g-step">
+    <div class="g-step-text">
+      <p class="g-kicker">{% translate "Step 3" %}</p>
+      <h3 class="g-h2">{% translate "Claim and collect" %}</h3>
+      <p>{% translate "Found something useful? Request it with a short purpose. The request goes to the right approver, facilities arranges the move or collection, and you confirm when it arrives. Everyone is notified at each step." %}</p>
+    </div>
+    {% translate "An approver's queue with a request ready to approve" as alt %}{% include "guest/_shot.html" with img="step-claim" alt=alt h=560 %}
+  </article>
+  <article class="g-wrap g-step flip">
+    <div class="g-step-text">
+      <p class="g-kicker">{% translate "Step 4" %}</p>
+      <h3 class="g-h2">{% blocktranslate %}Explore {{ brand }} with your team{% endblocktranslate %}</h3>
+      <p>{% translate "Every completed reuse is recorded. The impact dashboard shows how many items were reused, the estimated purchase cost avoided and the estimated carbon saved, with the assumptions behind each figure. Reports can be filtered by unit and period and exported." %}</p>
+      <a class="g-btn g-btn-red" href="{{ guest_cta_url }}">{% translate "Get started" %}</a>
+    </div>
+    {% translate "The impact dashboard with reuse counts, estimated savings and carbon avoided" as alt %}{% include "guest/_shot.html" with img="step-impact" alt=alt %}
+  </article>
+</section>
+
+<section class="g-admin" aria-labelledby="g-admin-h">
+  <div class="g-wrap g-step">
+    <div class="g-step-text">
+      <p class="g-kicker">{% translate "For administrators" %}</p>
+      <h2 id="g-admin-h" class="g-h2">{% translate "Stay in control of your reuse programme" %}</h2>
+      <ul class="g-list">
+        <li><b>{% translate "Users and permissions." %}</b> {% translate "Create, deactivate and reactivate accounts, and give each person the roles they need." %}</li>
+        <li><b>{% translate "Who can list and claim." %}</b> {% translate "Roles decide who registers and publishes items, who can request them and who handles transfers and maintenance." %}</li>
+        <li><b>{% translate "Approvals." %}</b> {% translate "Set approval routes by unit and value limit, and test who would approve a request before it happens." %}</li>
+        <li><b>{% translate "Departments and locations." %}</b> {% translate "Keep the list of units, campuses and buildings up to date." %}</li>
+        <li><b>{% translate "Activity and reports." %}</b> {% translate "See reuse activity across units, run reports, export them and follow the audit history." %}</li>
+      </ul>
+    </div>
+    {% translate "The people page where an administrator manages accounts and roles" as alt %}{% include "guest/_shot.html" with img="admin" alt=alt %}
+  </div>
+</section>
+{% include "guest/_cta_band.html" %}
+{% endblock %}

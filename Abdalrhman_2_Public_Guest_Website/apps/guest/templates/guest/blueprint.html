@@ -1,0 +1,48 @@
+{% extends "guest/base.html" %}{% load i18n static %}
+{% block title %}{{ brand }} · {% translate "Institution Blueprint" %}{% endblock %}
+{% block content %}
+{% with bp=blueprint %}
+<section class="g-blueprint" id="blueprint" aria-labelledby="g-bp-h">
+  <svg class="g-bp-bgtree" data-bp-tree viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"></svg>
+  <div class="g-wrap">
+    <div class="g-bp-intro">
+      <h2 id="g-bp-h" class="g-h2">{% translate "Institution Blueprint" %}</h2>
+      <p>{% blocktranslate %}Every organisation runs differently. A hospital is organised into wards, a school into grades, a hotel into departments, and each one decides who approves what in its own way. Institution Blueprint shapes {{ brand }} around your organisation, not the other way round, which takes it far beyond universities.{% endblocktranslate %}</p>
+      <p class="g-bp-limit">{% blocktranslate %}However your organisation is built, there's no ceiling on what {{ brand }} can do for it.{% endblocktranslate %}</p>
+    </div>
+    <div class="g-bp-grid">
+      <div class="g-bp-text">
+        <ol class="g-bp-steps">
+          <li><h3>{% translate "Map your units" %}</h3><p>{% translate "Colleges, departments, wards or grades, in your own words." %}</p></li>
+          <li><h3>{% translate "Set who can do what" %}</h3><p>{% translate "Member types, permissions and an approval limit for each." %}</p></li>
+          <li><h3>{% translate "Choose approval routes" %}</h3><p>{% translate "Decide who approves which requests, and test it before going live." %}</p></li>
+        </ol>
+        <p class="g-bp-ai"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+          <span>{% translate "Or describe your organisation in a few sentences. AI drafts the setup, and you review every item before anything changes." %}</span></p>
+        <div class="g-ctas">
+          <a class="g-btn g-btn-neon-navy" href="{{ guest_cta_url }}">{% translate "Create your account" %}</a>
+          <a class="g-btn g-btn-ghost-light" href="{% url 'guest:contact' %}">{% translate "Talk to us" %}</a>
+        </div>
+      </div>
+      <div class="g-bp-demo" data-bp>
+        <div class="g-bp-switch" role="group" aria-label="{% translate 'Start from a template' %}">
+          <span class="g-bp-switch-label">{% translate "Start from a template" %}</span>
+          <div>{% for key, label in bp.choices %}<a class="g-bp-tab" href="?bp={{ key }}#blueprint" data-bp-key="{{ key }}" role="button" aria-pressed="{% if key == bp.active %}true{% else %}false{% endif %}">{{ label }}</a>{% endfor %}</div>
+        </div>
+        {% for t in bp.templates %}
+        <div class="g-bp-panel" data-bp-panel="{{ t.key }}"{% if t.key != bp.active %} hidden{% endif %}>
+          <h3 class="g-bp-cap">{% translate "Units" %}</h3>
+          <ul class="g-bp-tree">{% include "guest/_bp_node.html" with nodes=t.tree %}</ul>
+          <h3 class="g-bp-cap">{% translate "Member types" %}</h3>
+          <ul class="g-bp-roles">{% for r in t.roles %}<li>{{ r.name }}{% if r.limit %} <span>· {% blocktranslate with v=r.limit %}up to AED {{ v }}{% endblocktranslate %}</span>{% endif %}</li>{% endfor %}</ul>
+          <h3 class="g-bp-cap">{% translate "Approval routes" %}</h3>
+          <ol class="g-bp-rules">{% for r in t.rules %}<li>{{ r }}</li>{% endfor %}</ol>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endwith %}
+{% include "guest/_cta_band.html" %}
+{% endblock %}

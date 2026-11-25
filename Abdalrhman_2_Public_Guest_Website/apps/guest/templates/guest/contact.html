@@ -1,0 +1,20 @@
+{% extends "guest/base.html" %}{% load i18n %}
+{% block title %}{% translate "Contact" %} · {{ brand }}{% endblock %}
+{% block content %}
+<section class="g-intro" aria-labelledby="g-contact-h">
+  <div class="g-wrap center">
+    <h1 id="g-contact-h" class="g-display">{% translate "Contact us" %}</h1>
+  </div>
+</section>
+<section class="g-wrap g-contact">
+  <div class="g-contact-info">
+    <h2 class="g-h2">{% translate "Get in touch" %}</h2>
+    <p>{% blocktranslate %}Questions about {{ brand }}, a demo for your organisation, or an account for your team? Send us a message or call.{% endblocktranslate %}</p>
+    <dl>
+      <dt>{% translate "Phone" %}</dt><dd><a href="tel:+971{{ phone|slice:'1:' }}" dir="ltr">{{ phone }}</a></dd>
+      <dt>{% translate "Email" %}</dt><dd><a href="mailto:{{ email }}" dir="ltr">{{ email }}</a></dd>
+    </dl>
+  </div>
+  <div class="g-contact-form" id="contact-form">{% include "guest/_contact_form.html" %}</div>
+</section>
+{% endblock %}
