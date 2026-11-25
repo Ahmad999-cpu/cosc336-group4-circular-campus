@@ -1,6 +1,0 @@
-{% load i18n %}{% translate "Report a problem" as t %}{% include "components/drawer_head.html" with title=t kicker=asset.name %}
-<form class="drawer-body" hx-post="{% url 'lifecycle:report' asset.pk %}" hx-target="#drawer" novalidate>
-  {% for f in form %}{% include "access/_field.html" %}{% endfor %}
-  <p class="meta">{% translate "The item stays where it is. Work starts when maintenance staff pick it up; a reserved item can't go into maintenance until its transfer is done or cancelled." %}</p>
-  <button class="btn btn-red" type="submit" data-autofocus>{% translate "Send" %}</button>
-</form>

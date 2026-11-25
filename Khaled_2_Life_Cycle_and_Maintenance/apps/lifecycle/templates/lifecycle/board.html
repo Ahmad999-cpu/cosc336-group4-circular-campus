@@ -1,8 +1,0 @@
-{% extends "base.html" %}{% load i18n ui %}
-{% block title %}{% translate "Maintenance" %} · Circular Campus{% endblock %}
-{% block content %}
-<section class="page">
-  <div class="page-head"><div><h1>{% translate "Maintenance" %}</h1><p>{% translate "Defects, inspections, repairs and end-of-life decisions. A repaired item goes back into service only after its custodian checks it." %}</p></div></div>
-  <div id="board">{% include "lifecycle/_board_body.html" %}</div>
-</section>
-{% endblock %}
