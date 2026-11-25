@@ -1,5 +1,0 @@
-{% load i18n %}{% translate "Edit request" as t %}{% include "components/drawer_head.html" with title=t kicker=req.selected_asset.name %}
-<form class="drawer-body" hx-post="{% url 'resource_requests:edit' req.pk %}" hx-target="#drawer" novalidate>
-  {% include "resource_requests/_form_fields.html" with asset=None %}
-  <button class="btn btn-red" type="submit">{% translate "Save changes" %}</button>
-</form>

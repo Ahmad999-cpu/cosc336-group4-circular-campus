@@ -1,7 +1,0 @@
-{% load i18n ui %}{% translate "Request sent" as t %}{% include "components/drawer_head.html" with title=t %}
-<div class="drawer-body">
-  <p>{% blocktranslate with n=req.quantity name=req.selected_asset.name|default:req.category.name %}Your request for {{ n }} × {{ name }} is with the approver.{% endblocktranslate %}</p>
-  {% steps 0 _("Sent,Approved,On its way,Received") %}
-  <div class="actions"><a class="btn btn-navy" href="{% url 'resource_requests:mine' %}">{% translate "See my requests" %}</a>
-    <button class="btn btn-ghost" type="button" data-drawer-close>{% translate "Keep browsing" %}</button></div>
-</div>
