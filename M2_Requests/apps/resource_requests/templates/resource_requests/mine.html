@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "My requests" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "My requests" %}</h1><p>{% translate "Everything you've asked for, and where it is now." %}</p></div>
+    {% url 'matching:find' as find_url %}<a class="btn btn-red" href="{{ find_url|default:'/assets/' }}">{% translate "Find something" %}</a>
+  </div>
+  <nav class="seg" aria-label="{% translate 'Show' %}" style="max-width:420px;margin-bottom:18px">
+    <a href="?show=open" {% if which == "open" %}aria-current="true"{% endif %}>{% translate "Open" %}{% if open_n %} ({{ open_n|num }}){% endif %}</a>
+    <a href="?show=closed" {% if which == "closed" %}aria-current="true"{% endif %}>{% translate "Closed" %}</a>
+    <a href="?show=all" {% if which == "all" %}aria-current="true"{% endif %}>{% translate "All" %}</a>
+  </nav>
+  {% if requests %}
+  <div class="list">
+    {% for r in requests %}{% include "resource_requests/_card.html" %}{% endfor %}
+  </div>
+  {% else %}
+  {% if which == "open" %}{% translate "No open requests" as t1 %}{% translate "Find something on campus and request it. It shows up here with every step." as t2 %}{% else %}{% translate "Nothing here yet" as t1 %}{% translate "Closed requests (received, rejected or cancelled) are kept here for your records." as t2 %}{% endif %}
+  {% url 'catalogue:browse' as browse %}{% translate "Browse what's free" as t3 %}
+  {% empty_state t1 t2 browse t3 "btn-red" %}
+  {% endif %}
+</section>
+{% endblock %}
