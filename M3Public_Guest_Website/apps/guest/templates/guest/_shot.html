@@ -1,5 +1,0 @@
-{% load i18n static %}{% get_current_language as L %}{% comment %}A product screenshot in a framed card. Replace static/img/guest/<name>.png (English) and <name>-ar.png (Arabic) to update it.{% endcomment %}
-<figure class="g-shot{% if dark %} dark{% endif %}">
-  <img src="{% if L == 'ar' %}{% static 'img/guest/'|add:img|add:'-ar.png' %}{% else %}{% static 'img/guest/'|add:img|add:'.png' %}{% endif %}" alt="{{ alt }}" loading="lazy" width="1440" height="{{ h|default:900 }}">
-  <span class="g-demo-tag">{% translate "Demo data" %}</span>
-</figure>

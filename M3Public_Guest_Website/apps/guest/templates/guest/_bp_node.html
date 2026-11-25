@@ -1,1 +1,0 @@
-{% for n in nodes %}<li><span class="g-bp-node"><b>{{ n.name }}</b>{% if n.kind != n.name %}<i>{{ n.kind }}</i>{% endif %}</span>{% if n.children %}<ul>{% include "guest/_bp_node.html" with nodes=n.children %}</ul>{% endif %}</li>{% endfor %}
