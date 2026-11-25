@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Sign in" %} · Circular Campus{% endblock %}
+{% block footer %}{% endblock %}
+{% block content %}
+<div class="auth">
+  <section class="band" aria-labelledby="hero-h">
+    <svg class="loop" viewBox="0 0 600 600" aria-hidden="true"><path d="M480 300a180 180 0 1 1-52.7-127.3M436 116v62h-62" fill="none" stroke="#7EA6CE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="band-inner">
+      <div>
+        <h1 class="statement" id="hero-h"><span><i>{% translate "Stop buying" %}</i></span><span><i>{% translate "what you" %}</i></span><span><i>{% translate "already own." %}</i></span></h1>
+        <p class="lede">{% translate "Find, share and reuse equipment across the university. Every transfer is approved, tracked and counted." %}</p>
+      </div>
+    </div>
+  </section>
+  <div class="auth-form">
+    <div class="panel">
+      <h1>{% translate "Sign in" %}</h1>
+      <form method="post" class="stack" novalidate>{% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% if form.non_field_errors %}<p class="err" role="alert">{{ form.non_field_errors.0 }}</p>{% endif %}
+        <label class="field" for="{{ form.username.id_for_label }}">{{ form.username.label }}{{ form.username }}</label>
+        <label class="field" for="{{ form.password.id_for_label }}">{{ form.password.label }}{{ form.password }}</label>
+        <button class="btn btn-red block" type="submit">{% translate "Sign in" %}</button>
+      </form>
+      {% if demo_accounts %}
+      <div class="stack" style="gap:8px">
+        <p class="meta">{% translate "Demo: sign in as" %}</p>
+        <form method="post" action="{% url 'access:demo_login' %}" class="demo-users">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+          {% for u, label in demo_accounts %}<button type="submit" name="email" value="{{ u.email }}"><b>{{ u.full_name }}</b><span class="meta">{{ label }}</span></button>{% endfor %}
+        </form>
+      </div>
+      {% endif %}
+      <a class="calc-cta" href="{% url 'sustainability:calculator' %}">
+        <span class="calc-cta-ico">{% icon "chart" 22 "currentColor" "2" %}</span>
+        <span><b>{% translate "Estimate savings" %}</b>
+          <span>{% translate "See what your institution could save. No sign-in needed." %}</span></span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

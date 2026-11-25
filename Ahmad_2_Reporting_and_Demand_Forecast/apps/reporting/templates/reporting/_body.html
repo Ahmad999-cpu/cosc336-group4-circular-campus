@@ -1,0 +1,33 @@
+{% load i18n ui %}
+{% if is_rt %}
+<div class="tiles">
+  <div class="panel tile hero"><span class="meta">{% translate "Requests" %}</span><span class="num" data-count="{{ totals.requests }}">{{ totals.requests|num }}</span><span class="meta">{% blocktranslate with n=totals.units_requested %}{{ n }} units asked for{% endblocktranslate %}{% if totals.median_hours_to_decision is not None %} · {% blocktranslate with h=totals.median_hours_to_decision %}decided in {{ h }} h (median){% endblocktranslate %}{% endif %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Approval rate" %}</span><span class="num">{% if totals.approval_rate_pct is None %}–{% else %}{{ totals.approval_rate_pct }}%{% endif %}</span><span class="meta">{% blocktranslate with a=totals.approved r=totals.rejected p=totals.pending %}{{ a }} approved · {{ r }} rejected · {{ p }} waiting{% endblocktranslate %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Units moved" %}</span><span class="num" data-count="{{ totals.units_moved }}">{{ totals.units_moved|num }}</span><span class="meta">{% blocktranslate with c=totals.transfers_completed t=totals.transfers_in_transit %}{{ c }} transfers done · {{ t }} on the way{% endblocktranslate %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Value reused" %}</span><span class="num">{{ totals.value_reused_aed|aed }}</span><span class="meta">{% blocktranslate with n=totals.replaced_planned_purchases %}estimated · {{ n }} planned purchases avoided{% endblocktranslate %}</span></div>
+</div>
+{% else %}
+<div class="tiles">
+  <div class="panel tile hero"><span class="meta">{% translate "Items listed" %}</span><span class="num" data-count="{{ totals.items }}">{{ totals.items|num }}</span><span class="meta">{% blocktranslate with n=totals.units_with_listings %}from {{ n }} units{% endblocktranslate %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Free units" %}</span><span class="num" data-count="{{ totals.free_units }}">{{ totals.free_units|num }}</span><span class="meta">{% translate "not reserved by anyone" %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Value waiting for reuse" %}</span><span class="num">{{ totals.value_free_aed|aed }}</span><span class="meta">{% translate "estimated by custodians" %}</span></div>
+  <div class="panel tile"><span class="meta">{% translate "Under maintenance" %}</span><span class="num">{{ totals.under_maintenance|num }}</span><span class="meta">{% translate "not in the marketplace" %}</span></div>
+</div>
+{% endif %}
+
+<div id="summary-panel" style="margin-top:18px">{% include "reporting/_summary.html" %}</div>
+
+<div class="spread" style="margin:22px 0 10px">
+  <h2 class="section-title" style="margin:0">{% blocktranslate count n=row_count %}{{ n }} row{% plural %}{{ n }} rows{% endblocktranslate %}{% if row_count > rows|length %} <span class="meta">{% blocktranslate with n=rows|length %}(newest {{ n }} shown){% endblocktranslate %}</span>{% endif %}</h2>
+  <a class="btn btn-navy" href="{{ csv_url }}" download>{% icon "download" 18 %} {% translate "Download CSV" %}</a>
+</div>
+<div class="panel queue">
+  {% if rows %}
+  <table>
+    <thead><tr>{% for key, label in cols %}<th scope="col">{{ label }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in rows %}<tr>{% for key, label in cols %}<td class="{% if key in num_cols %}tnum{% endif %}{% if key in date_cols %} nowrap{% endif %}">{{ r|get:key|default:"–" }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table>
+  {% else %}
+    {% translate "Nothing in this period" as t1 %}{% translate "Try a longer period or another unit." as t2 %}{% empty_state t1 t2 %}
+  {% endif %}
+</div>

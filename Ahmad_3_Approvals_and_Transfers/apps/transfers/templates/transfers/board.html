@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Transfers" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "Transfers" %}</h1><p>{% translate "Approved items to move. Custody changes only when the receiver confirms, so a lost delivery never disappears from stock." %}</p></div>
+  </div>
+  <div id="board">{% include "transfers/_board_body.html" %}</div>
+</section>
+{% endblock %}

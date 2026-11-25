@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Reports" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "Reports" %}</h1><p>{% translate "Every number here comes straight from the records. The AI only writes a draft summary, and a person checks it before anyone sees it." %}</p></div>
+  </div>
+  <form id="report-filter" class="toolbar" hx-get="{% url 'reporting:index' %}" hx-target="#report-body" hx-push-url="true" hx-trigger="change">
+    <div class="seg" role="radiogroup" aria-label="{% translate 'Report' %}">
+      {% for val, label in form.fields.type.choices %}
+      <label><input type="radio" name="type" value="{{ val }}" {% if f.report_type == val %}checked{% endif %}><span>{{ label }}</span></label>
+      {% endfor %}
+    </div>
+    <label class="field" for="id_start">{{ form.start.label }}{{ form.start }}</label>
+    <label class="field" for="id_end">{{ form.end.label }}{{ form.end }}</label>
+    <label class="field" for="id_unit">{{ form.unit.label }}{{ form.unit }}</label>
+    <noscript><button class="btn btn-navy" type="submit">{% translate "Show" %}</button></noscript>
+  </form>
+  {% if form.non_field_errors %}<p class="err" role="alert">{{ form.non_field_errors.0 }}</p>{% endif %}
+  <div id="report-body">{% include "reporting/_body.html" %}</div>
+</section>
+{% endblock %}

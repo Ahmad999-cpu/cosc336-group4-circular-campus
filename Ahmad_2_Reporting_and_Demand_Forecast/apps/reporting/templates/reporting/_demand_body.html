@@ -1,0 +1,58 @@
+{% load i18n ui %}
+{% if fc.sample %}<div class="panel pad notice" role="status"><b>{% translate "Sample data." %}</b> {% translate "These numbers are made up for the demonstration, not real requests. They are generated on screen and never stored." %}</div>{% endif %}
+<dl class="kv dm-facts">
+  <div><dt>{% translate "Forecast for" %}</dt><dd>{{ fc.target|date:"F Y" }}</dd></div>
+  <div><dt>{% translate "History used" %}</dt><dd>{{ fc.history_start|date:"M Y" }} – {{ fc.history_end|date:"M Y" }}</dd></div>
+  <div><dt>{% translate "Records used" %}</dt><dd class="tnum">{% blocktranslate count n=fc.records %}{{ n }} request{% plural %}{{ n }} requests{% endblocktranslate %}{% if fc.sample %} ({% translate "sample" %}){% endif %}</dd></div>
+  <div><dt>{% translate "Method" %}</dt><dd>{% blocktranslate %}Average of the last 3 full months{% endblocktranslate %}</dd></div>
+</dl>
+{% if not fc.enough %}
+  <div class="panel empty">
+    <h2>{% translate "Insufficient data" %}</h2>
+    <p>{% if fc.reason == "records" %}{% blocktranslate with n=fc.records m=min_records %}Only {{ n }} request(s) in this selection. A forecast needs at least {{ m }}, so none is shown.{% endblocktranslate %}
+       {% else %}{% blocktranslate with m=min_months %}Requests started less than {{ m }} months ago, so there is no stable pattern yet.{% endblocktranslate %}{% endif %}</p>
+    {% if not fc.sample %}<a class="btn btn-ghost" href="?sample=1{% if category %}&category={{ category.pk }}{% endif %}">{% translate "See how it works with sample data" %}</a>{% endif %}
+  </div>
+{% else %}
+  {% with s=fc.total %}
+  <section class="panel pad" aria-labelledby="dm-total-h">
+    <div class="spread"><h2 id="dm-total-h" class="advice-h">{% translate "All selected categories" %}</h2>
+      <p class="dm-big"><span class="meta">{% translate "Next month, about" %}</span> <b class="tnum">{{ s.baseline|floatformat:0 }}</b> {% translate "units" %}
+        {% if s.trend %}<span class="pill {% if s.trend == 'rising' %}warn{% elif s.trend == 'falling' %}info{% else %}mute{% endif %}">{% if s.trend == "rising" %}{% translate "Rising" %}{% elif s.trend == "falling" %}{% translate "Falling" %}{% else %}{% translate "Steady" %}{% endif %}</span>{% endif %}</p></div>
+    <div class="dm-bars" role="img" aria-label="{% blocktranslate with n=s.baseline|floatformat:0 %}Units requested per month for the last 12 months, and about {{ n }} forecast for next month{% endblocktranslate %}">
+      {% for m, u, pct in s.bars %}<div class="dm-col"><span class="dm-v tnum">{{ u }}</span><i style="height:{{ pct }}%"></i><span class="dm-m">{{ m|date:"M" }}</span></div>{% endfor %}
+      <div class="dm-col dm-fc"><span class="dm-v tnum">≈{{ s.baseline|floatformat:0 }}</span><i style="height:{{ s.forecast_pct }}%"></i><span class="dm-m">{{ fc.target|date:"M" }}</span></div>
+    </div>
+    <p class="meta small">{% if fc.sample %}{% translate "Solid bars: sample units (made up). Dashed bar: the forecast." %}{% else %}{% translate "Solid bars: units asked for in real requests (cancelled ones left out). Dashed bar: the forecast." %}{% endif %}{% if fc.current_month_so_far %} {% blocktranslate with n=fc.current_month_so_far %}This month so far: {{ n }} units (not used, the month isn't over).{% endblocktranslate %}{% endif %}</p>
+  </section>
+  {% endwith %}
+
+  <section class="panel pad" aria-labelledby="dm-cat-h" style="margin-top:16px">
+    <h2 id="dm-cat-h" class="advice-h">{% translate "By category" %}</h2>
+    <div class="queue dm-table"><table>
+      <thead><tr><th scope="col">{% translate "Category" %}</th><th scope="col">{% translate "Last 3 months" %}</th><th scope="col">{% translate "Forecast next month" %}</th>
+        <th scope="col">{% translate "Recent range" %}</th><th scope="col">{% translate "Trend" %}</th><th scope="col">{% translate "Records" %}</th>
+        {% if compare %}<th scope="col">{% translate "Straight-line" %}</th><th scope="col">{% translate "Past error: average / line" %}</th>{% endif %}</tr></thead>
+      <tbody>{% for r in fc.rows %}<tr>
+        <th scope="row">{{ r.label }}</th>
+        <td class="tnum">{{ r.units|slice:"9:"|join:" · " }}</td>
+        {% if r.enough %}<td class="tnum"><b>≈{{ r.baseline|floatformat:0 }}</b></td><td class="tnum">{{ r.recent_low }}–{{ r.recent_high }}</td>
+          <td>{% if r.trend == "rising" %}{% translate "Rising" %}{% elif r.trend == "falling" %}{% translate "Falling" %}{% elif r.trend %}{% translate "Steady" %}{% else %}–{% endif %}</td>
+        {% else %}<td colspan="3" class="meta">{% translate "Insufficient data for this category" %}</td>{% endif %}
+        <td class="tnum">{{ r.records }}</td>
+        {% if compare %}<td class="tnum">{% if r.linear is not None %}≈{{ r.linear|floatformat:0 }}{% else %}–{% endif %}</td>
+          <td class="tnum">{% if r.mae_baseline is not None %}{{ r.mae_baseline|floatformat:1 }} / {{ r.mae_linear|floatformat:1 }}{% else %}–{% endif %}</td>{% endif %}
+      </tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+{% endif %}
+<details class="panel pad meta small" style="margin-top:16px">
+  <summary>{% translate "How the forecast works and its limits" %}</summary>
+  <ul>
+    <li>{% translate "Demand in a month = units asked for in requests sent that month, by requesting units you may report on. Cancelled requests are left out." %}</li>
+    <li>{% translate "Forecast = the average of the last 3 full months. Trend compares those 3 months with the 3 before them:" %} {% blocktranslate with b=band %}more than {{ b }}% up is rising, more than {{ b }}% down is falling.{% endblocktranslate %}</li>
+    <li>{% blocktranslate with m=min_records n=min_months c=min_cat %}No forecast with fewer than {{ m }} requests or less than {{ n }} months of history; no category row with fewer than {{ c }} requests.{% endblocktranslate %}</li>
+    <li>{% blocktranslate with n=linear_min %}The straight-line trend is optional and needs {{ n }} months of history. "Past error" tests both methods on earlier months (average miss in units, lower is better). It is not proof of which will be right next month.{% endblocktranslate %}</li>
+    <li>{% translate "Forecasts are estimates, not promises. They describe categories and units, never individual people." %}</li>
+  </ul>
+</details>

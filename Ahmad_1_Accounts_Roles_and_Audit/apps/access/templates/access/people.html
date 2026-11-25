@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "People" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "People" %}</h1><p>{% translate "Accounts, units and roles. A role given for a unit also covers every unit below it." %}</p></div>
+    <button class="btn btn-red" type="button" hx-get="{% url 'access:person_new' %}" hx-target="#drawer">{% icon "plus" 18 %} {% translate "Add person" %}</button>
+  </div>
+  <form id="people-filter" class="toolbar" hx-get="{% url 'access:people' %}?partial=1" hx-target="#rows" hx-trigger="input changed delay:250ms from:#id_q, change from:#id_status" role="search">
+    <label class="field" style="flex:1 1 260px" for="id_q">{{ filter.q.label }}{{ filter.q }}</label>
+    <label class="field" for="id_status">{{ filter.status.label }}{{ filter.status }}</label>
+  </form>
+  <div class="panel queue">
+    <table>
+      <thead><tr><th scope="col">{% translate "Person" %}</th><th scope="col">{% translate "Unit" %}</th><th scope="col">{% translate "Roles" %}</th><th scope="col">{% translate "Status" %}</th><th scope="col"><span class="sr">{% translate "Actions" %}</span></th></tr></thead>
+      <tbody id="rows" hx-get="{% url 'access:people' %}?partial=1" hx-trigger="people-changed from:body" hx-include="#people-filter">
+        {% include "access/_people_rows.html" %}
+      </tbody>
+    </table>
+  </div>
+  {% if request.GET.open and request.GET.open|slice:":18" == "/accounts/people/" %}<div hx-get="{{ request.GET.open }}" hx-target="#drawer" hx-trigger="load"></div>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load i18n ui %}
+<section class="panel pad ai-summary" aria-labelledby="sum-h">
+  <div class="spread">
+    <h2 class="section-title" id="sum-h" style="margin:0">{% icon "spark" 18 %} {% translate "Summary" %}</h2>
+    {% if can_publish and not draft %}
+    <form hx-post="{% url 'reporting:summarize' %}" hx-target="#summary-panel" hx-include="#report-filter" hx-disabled-elt="find button" hx-indicator="this">
+      <button class="btn btn-red sm" type="submit"><span class="when-idle">{% icon "spark" 16 %} {% if published %}{% translate "Write a new draft" %}{% else %}{% translate "Write a draft with AI" %}{% endif %}</span><span class="when-busy">{% translate "Writing…" %}</span></button>
+    </form>
+    {% endif %}
+  </div>
+  {% if error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
+  {% if outcome and not outcome.summary %}<p class="meta" role="status">{{ outcome.message }}</p>{% endif %}
+
+  {% if draft %}
+  <form class="draft" hx-post="{% url 'reporting:publish' draft.pk %}" hx-target="#summary-panel" hx-include="#report-filter">
+    <p class="meta">{% translate "AI draft. Only you can see it until you publish. Check every number against the tiles above." %}</p>
+    {% if unchecked %}<p class="warn-note" role="alert">{% icon "alert" 16 %} {% blocktranslate with nums=unchecked|join:", " %}These numbers are not in the report: {{ nums }}. Fix or remove them before publishing.{% endblocktranslate %}</p>{% endif %}
+    <label class="sr" for="draft-text">{% translate "Summary text" %}</label>
+    <textarea class="input" id="draft-text" name="text" rows="6" maxlength="4000">{{ draft.final_text|default:draft.draft_text }}</textarea>
+    <div class="spread" style="margin-top:10px">
+      <span class="meta">{% blocktranslate with m=draft.model_version.model_name %}Written by {{ m }} from the totals only. No names were sent.{% endblocktranslate %}</span>
+      <span class="acts-row">
+        <button class="btn btn-ghost sm" type="button" hx-post="{% url 'reporting:discard' draft.pk %}" hx-target="#summary-panel" hx-include="#report-filter">{% translate "Discard" %}</button>
+        <button class="btn btn-navy sm" type="submit">{% translate "Publish" %}</button>
+      </span>
+    </div>
+  </form>
+  {% endif %}
+
+  {% for s in published %}
+  <article class="published{% if not forloop.first %} older{% endif %}">
+    <p>{{ s.final_text|linebreaksbr }}</p>
+    <p class="meta">{% blocktranslate with who=s.reviewed_by.full_name when=s.reviewed_at|date:"j M Y, H:i" %}Published by {{ who }} on {{ when }}.{% endblocktranslate %} {% blocktranslate with cut=s.report.data_cutoff|date:"j M Y, H:i" %}Numbers as of {{ cut }}.{% endblocktranslate %}
+      {% if s.final_text != s.draft_text %}{% translate "Edited from the AI draft." %}{% else %}{% translate "AI draft published as written." %}{% endif %}</p>
+  </article>
+  {% empty %}
+    {% if not draft %}<p class="meta" style="margin:8px 0 0">{% if can_publish %}{% translate "No summary for this period yet. The AI writes a draft from the numbers above; you edit it before publishing." %}{% else %}{% translate "No published summary for this period yet." %}{% endif %}</p>{% endif %}
+  {% endfor %}
+</section>

@@ -1,0 +1,40 @@
+{% load i18n ui %}
+<div class="summary">
+  <div class="panel"><span class="meta">{% translate "Waiting for you" %}</span><b class="tnum">{{ pending|num }}</b></div>
+  <div class="panel"><span class="meta">{% translate "Decided in the last 24 hours" %}</span><b class="tnum">{{ today|num }}</b></div>
+  <div class="panel"><span class="meta">{% translate "Waiting longest" %}</span><b>{% if oldest %}{{ oldest|timesince }}{% else %}—{% endif %}</b></div>
+</div>
+{% if rows %}
+<div class="panel queue">
+  <table>
+    <thead><tr><th scope="col">{% translate "Request" %}</th><th scope="col">{% translate "From" %}</th><th scope="col">{% translate "Item" %}</th><th scope="col">{% translate "Value" %}</th><th scope="col">{% translate "Decision" %}</th></tr></thead>
+    <tbody>
+    {% for row in rows %}{% with r=row.req a=row.req.selected_asset %}
+    <tr id="q-{{ r.pk }}">
+      <td><b>{{ r.purpose|truncatechars:70 }}</b>
+        <span class="hint">{% if r.urgency == "HIGH" %}<span class="pill red">{{ r.get_urgency_display }}</span>{% else %}{{ r.get_urgency_display }}{% endif %}{% if r.required_date %} · {% translate "needed by" %} {{ r.required_date|date:"j M" }}{% endif %} · {% blocktranslate with t=r.submitted_at|timesince %}{{ t }} ago{% endblocktranslate %}</span></td>
+      <td>{{ r.requester.full_name }}<span class="hint">{{ r.department.name }}</span></td>
+      <td><button class="linkish" style="padding:0;color:var(--ink);font-weight:600;text-align:start" type="button" hx-get="{% url 'catalogue:panel' a.pk %}" hx-target="#drawer">{{ r.quantity|num }} × {{ a.name }}</button>
+        <span class="hint">{% blocktranslate with n=a.unreserved_quantity %}{{ n }} free{% endblocktranslate %} · {{ a.owner_department.name }}</span></td>
+      <td class="tnum">{{ row.value|aed }}</td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-navy sm" hx-post="{% url 'transfers:approve' r.pk %}" hx-vals='{"v": "{{ r.row_version }}"}' hx-target="#queue" {% if row.problem %}disabled aria-describedby="why-{{ r.pk }}"{% endif %}>{% translate "Approve" %}</button>
+          <button class="btn btn-ghost sm" type="button" data-toggle="rj-{{ r.pk }}" aria-expanded="false" aria-controls="rj-{{ r.pk }}" {% if row.problem.code == "SELF_APPROVAL" %}disabled{% endif %}>{% translate "Reject" %}</button>
+        </div>
+        {% if row.problem %}<span class="hint red" id="why-{{ r.pk }}">{{ row.problem|tr }}</span>
+        {% elif row.rivals %}<span class="hint">{% blocktranslate count n=row.rivals|length %}Competes with {{ n }} other request for this item.{% plural %}Competes with {{ n }} other requests for this item.{% endblocktranslate %}</span>{% endif %}
+        <div class="collapse inline-form" id="rj-{{ r.pk }}"><div><form class="inner" hx-post="{% url 'transfers:reject' r.pk %}" hx-target="#queue">
+          <label class="field" for="rjr-{{ r.pk }}">{% translate "Tell the requester why" %}<textarea class="input" id="rjr-{{ r.pk }}" name="reason" rows="2" required></textarea></label>
+          <div class="actions"><button class="btn btn-red sm" type="submit">{% translate "Reject request" %}</button></div>
+        </form></div></div>
+      </td>
+    </tr>
+    {% endwith %}{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+{% translate "Nothing waiting for you" as t1 %}{% translate "New requests for your units' items appear here. You'll also get a notification." as t2 %}
+{% empty_state t1 t2 %}
+{% endif %}

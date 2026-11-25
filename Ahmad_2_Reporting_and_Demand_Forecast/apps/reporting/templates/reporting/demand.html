@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Demand forecast" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "Demand forecast" %}</h1>
+      <p>{% translate "How many units each category is likely to be asked for next month, worked out from past requests. Use it to plan reuse, purchases and surplus collection." %}</p></div>
+  </div>
+  <form id="demand-filter" class="toolbar" method="get" hx-get="{% url 'reporting:demand' %}" hx-target="#demand-body" hx-push-url="true" hx-trigger="change">
+    <label class="field" for="dm-cat">{% translate "Category" %}
+      <select class="input" id="dm-cat" name="category"><option value="">{% translate "All categories" %}</option>
+        {% for c in categories %}<option value="{{ c.pk }}"{% if category and c.pk == category.pk %} selected{% endif %}>{{ c.display_name }}</option>{% endfor %}</select></label>
+    <label class="field" for="dm-unit">{% translate "Requesting unit" %}
+      <select class="input" id="dm-unit" name="unit"><option value="">{% translate "All my units" %}</option>
+        {% for u in units %}<option value="{{ u.pk }}"{% if unit and u.pk == unit.pk %} selected{% endif %}>{{ u.name }}</option>{% endfor %}</select></label>
+    <label class="check"><input type="checkbox" name="compare" value="1"{% if compare %} checked{% endif %}> {% translate "Compare with a straight-line trend" %}</label>
+    <label class="check"><input type="checkbox" name="sample" value="1"{% if sample %} checked{% endif %}> {% translate "Show sample data (demo)" %}</label>
+    <noscript><button class="btn btn-navy" type="submit">{% translate "Show" %}</button></noscript>
+  </form>
+  <div id="demand-body" aria-live="polite">{% include "reporting/_demand_body.html" %}</div>
+</section>
+{% endblock %}

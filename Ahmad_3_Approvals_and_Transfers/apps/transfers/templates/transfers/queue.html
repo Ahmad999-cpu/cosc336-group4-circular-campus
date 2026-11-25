@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n ui %}
+{% block title %}{% translate "Approvals" %} · Circular Campus{% endblock %}
+{% block content %}
+<section class="page">
+  <div class="page-head">
+    <div><h1>{% translate "Approvals" %}</h1><p>{% translate "Requests for items your units own. Approving reserves the units at once; custody moves only when the receiver confirms." %}</p></div>
+  </div>
+  <div id="queue" hx-get="{% url 'transfers:queue' %}?partial=1" hx-trigger="every 60s" hx-swap="innerHTML" hx-headers='{"X-Background": "1"}'>{% include "transfers/_queue_body.html" %}</div>
+</section>
+{% endblock %}

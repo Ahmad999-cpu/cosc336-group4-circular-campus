@@ -1,0 +1,50 @@
+{% load i18n ui %}
+<div class="summary">
+  <div class="panel"><span class="meta">{% translate "To dispatch" %}</span><b class="tnum">{{ awaiting|length|num }}</b></div>
+  <div class="panel"><span class="meta">{% translate "On the way" %}</span><b class="tnum">{{ transit|length|num }}</b></div>
+  <div class="panel"><span class="meta">{% translate "Recently received" %}</span><b class="tnum">{{ done|length|num }}</b></div>
+</div>
+<h2 class="section-title">{% translate "To dispatch" %}</h2>
+{% if awaiting %}
+<div class="panel queue" style="margin-bottom:24px"><table>
+  <thead><tr><th scope="col">{% translate "Item" %}</th><th scope="col">{% translate "From" %}</th><th scope="col">{% translate "To" %}</th><th scope="col">{% translate "Dispatch" %}</th></tr></thead>
+  <tbody>{% for t in awaiting %}
+  <tr id="t-{{ t.pk }}">
+    <td><b>{{ t.quantity|num }} × {{ t.asset.name }}</b><span class="hint">{% if t.request.required_date %}{% translate "needed by" %} {{ t.request.required_date|date:"j M" }}{% endif %}</span></td>
+    <td>{{ t.source_department.name }}<span class="hint">{{ t.source_location }}</span></td>
+    <td>{{ t.destination_department.name }}<span class="hint">{{ t.destination_location }} · {{ t.request.requester.full_name }}</span></td>
+    <td><form class="actions" hx-post="{% url 'transfers:dispatch' t.pk %}" hx-target="#board">
+      <label class="sr" for="how-{{ t.pk }}">{% translate "How" %}</label>
+      <select class="input" id="how-{{ t.pk }}" name="how" style="min-height:36px;width:auto">{% for a in arrangements %}<option>{{ a }}</option>{% endfor %}</select>
+      <label class="sr" for="note-{{ t.pk }}">{% translate "Note" %}</label>
+      <input class="input" id="note-{{ t.pk }}" name="note" placeholder="{% translate 'Note, e.g. Tuesday 10:00' %}" style="min-height:36px;width:180px">
+      <button class="btn btn-red sm" type="submit">{% translate "Mark as dispatched" %}</button>
+    </form></td>
+  </tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<p class="meta" style="margin-bottom:24px">{% translate "Nothing to move right now. Approved requests land here." %}</p>{% endif %}
+
+<h2 class="section-title">{% translate "On the way" %}</h2>
+{% if transit %}
+<div class="panel queue" style="margin-bottom:24px"><table>
+  <thead><tr><th scope="col">{% translate "Item" %}</th><th scope="col">{% translate "To" %}</th><th scope="col">{% translate "Status" %}</th><th scope="col">{% translate "Record a problem" %}</th></tr></thead>
+  <tbody>{% for t in transit %}
+  <tr id="t-{{ t.pk }}">
+    <td><b>{{ t.quantity|num }} × {{ t.asset.name }}</b><span class="hint">{{ t.arrangements }} · {% blocktranslate with t=t.dispatched_at|timesince %}{{ t }} ago{% endblocktranslate %}</span></td>
+    <td>{{ t.destination_department.name }}<span class="hint">{{ t.destination_location }}</span></td>
+    <td>{% pill "info" _("In transit") %}<span class="hint">{% blocktranslate with name=t.request.requester.full_name %}Waiting for {{ name }} to confirm receipt.{% endblocktranslate %}</span>
+      {% for ev in t.events.all %}<span class="hint {% if not ev.resolved and ev.event_type == 'DISCREPANCY' %}red{% endif %}">{{ ev.get_event_type_display }}: {{ ev.reason }}{% if not ev.resolved and ev.event_type == "DISCREPANCY" %} · <button class="linkish" style="padding:0" hx-post="{% url 'transfers:resolve' ev.pk %}" hx-target="#board">{% translate "Mark resolved" %}</button>{% endif %}</span>{% endfor %}</td>
+    <td><button class="btn btn-ghost sm" type="button" data-toggle="ev-{{ t.pk }}" aria-expanded="false" aria-controls="ev-{{ t.pk }}">{% translate "Record" %}</button>
+      <div class="collapse inline-form" id="ev-{{ t.pk }}"><div><form class="inner" hx-post="{% url 'transfers:event' t.pk %}" hx-target="#board">
+        <label class="field" for="evt-{{ t.pk }}">{% translate "What happened" %}<select class="input" id="evt-{{ t.pk }}" name="type">{% for v, l in event_types %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select></label>
+        <label class="field" for="evr-{{ t.pk }}">{% translate "Details" %}<input class="input" id="evr-{{ t.pk }}" name="reason" required></label>
+        <button class="btn btn-navy sm" type="submit">{% translate "Save" %}</button>
+      </form></div></div></td>
+  </tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<p class="meta" style="margin-bottom:24px">{% translate "Nothing on the way." %}</p>{% endif %}
+
+{% if done %}
+<h2 class="section-title">{% translate "Recently received" %}</h2>
+<div class="list">{% for t in done %}<div class="panel spread" style="padding:12px 16px"><span><b>{{ t.received_quantity|num }} × {{ t.asset.name }}</b> → {{ t.destination_department.name }}</span><span class="meta">{{ t.received_at|date:"j M, H:i" }}{% if t.replaced_planned_purchase %} · {% translate "replaced a planned purchase" %}{% endif %}</span></div>{% endfor %}</div>
+{% endif %}

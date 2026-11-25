@@ -1,0 +1,15 @@
+{% load i18n ui %}{% translate "Confirm receipt" as title %}{% include "components/drawer_head.html" with title=title kicker=t.asset.name %}
+<form class="drawer-body" hx-post="{% url 'transfers:receive' req.pk %}" hx-target="#drawer" novalidate>
+  <p>{% blocktranslate with n=t.quantity name=t.asset.name from=t.source_department.name %}{{ from }} sent {{ n }} × {{ name }}. How many arrived?{% endblocktranslate %}</p>
+  <div class="field"><span id="rq-l">{% translate "Units received" %}</span>
+    <div class="stepper-qty" role="group" aria-labelledby="rq-l" data-min="0" data-max="{{ t.quantity }}">
+      <button type="button" data-step="-1" aria-label="{% translate 'One fewer' %}">−</button><input type="number" name="quantity" value="{{ t.quantity }}" min="0" max="{{ t.quantity }}" aria-labelledby="rq-l"><button type="button" data-step="1" aria-label="{% translate 'One more' %}">+</button>
+    </div>
+    <span class="help">{% translate "Fewer than sent records a discrepancy instead; nothing moves until it's resolved." %}</span>
+    {% if error %}<span class="err" role="alert">{{ error }}</span>{% endif %}
+  </div>
+  <label class="field" for="rc-note">{% translate "Note (optional)" %}<input class="input" id="rc-note" name="note"></label>
+  <label class="switch"><input type="checkbox" name="replaced" value="1"> {% translate "This replaced a purchase we had planned" %}</label>
+  <p class="meta">{% translate "Ticking this counts the saving as verified, separately from estimates." %}</p>
+  <button class="btn btn-red" type="submit" data-autofocus>{% translate "Confirm receipt" %}</button>
+</form>

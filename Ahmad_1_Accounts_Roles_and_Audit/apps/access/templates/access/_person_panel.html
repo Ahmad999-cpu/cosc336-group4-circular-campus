@@ -1,0 +1,38 @@
+{% load i18n ui %}{% include "components/drawer_head.html" with title=person.full_name kicker=person.email %}
+<div class="drawer-body">
+  <section class="stack" aria-labelledby="st-h">
+    <h3 id="st-h" style="font-size:16px">{% translate "Account" %}</h3>
+    <div class="seg" role="group" aria-labelledby="st-h">
+      {% for value, label in statuses.choices %}
+      <button type="button" hx-post="{% url 'access:person_status' person.pk %}" hx-vals='{"status": "{{ value }}"}' hx-target="#drawer"
+        aria-pressed="{% if person.account_status == value %}true{% else %}false{% endif %}">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <p class="meta">{% translate "Suspended and deactivated accounts cannot sign in; their history stays." %}</p>
+  </section>
+
+  <section class="stack" aria-labelledby="roles-h">
+    <h3 id="roles-h" style="font-size:16px">{% translate "Roles" %}</h3>
+    {% for ra in assignments %}
+    <div class="spread panel" style="padding:10px 12px">
+      <div><b>{{ ra.role.display_name }}</b><div class="meta">{% if ra.scope_department %}{{ ra.scope_department.name }}{% else %}{% translate "Whole institution" %}{% endif %}{% if ra.role.approval_limit %} · {% translate "up to" %} {{ ra.role.approval_limit|aed }}{% endif %}</div></div>
+      <button class="btn btn-ghost sm" type="button" hx-post="{% url 'access:role_revoke' person.pk ra.pk %}" hx-target="#drawer">{% translate "Remove" %}</button>
+    </div>
+    {% empty %}<p class="meta">{% translate "No role yet. Without one, this person sees only the start page." %}</p>{% endfor %}
+    <form class="stack" hx-post="{% url 'access:role_assign' person.pk %}" hx-target="#drawer" style="gap:10px">
+      {% include "access/_field.html" with f=role_form.role %}
+      {% include "access/_field.html" with f=role_form.scope %}
+      <button class="btn btn-navy" type="submit">{% translate "Give role" %}</button>
+    </form>
+  </section>
+
+  <section aria-labelledby="det-h">
+    <h3 id="det-h" style="font-size:16px;margin-bottom:10px">{% translate "Details" %}</h3>
+    <form class="stack" hx-post="{% url 'access:person' person.pk %}" hx-target="#drawer" style="gap:10px" novalidate>
+      {% include "access/_field.html" with f=form.full_name %}
+      {% include "access/_field.html" with f=form.email %}
+      {% include "access/_field.html" with f=form.department %}
+      <button class="btn btn-ghost" type="submit">{% translate "Save details" %}</button>
+    </form>
+  </section>
+</div>
